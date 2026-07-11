@@ -2,7 +2,6 @@
 title: "Testing the Autonomous Content Pipeline"
 description: "Checking end-to-end static compilation deployment speeds."
 pubDate: "2026-07-11"
-heroImage: "/blog-placeholder-about.jpg"
 ---
 
 ### System Operational Test
