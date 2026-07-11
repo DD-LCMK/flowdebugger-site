@@ -1,10 +1,9 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -16,42 +15,30 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<BaseHead title={title} description={description} />
 		<style>
 			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
+				width: calc(100% - 2rem);
+				max-width: 720px;
 				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
+				padding: 3em 1rem;
 			}
 			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
+				color: #2d3748;
+				line-height: 1.75;
+				font-size: 1.1rem;
 			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
+			/* Modern Typography Upgrades */
+			.prose h1 { font-size: 2.25em; margin-top: 0; margin-bottom: 0.8em; color: #1a202c; line-height: 1.2; }
+			.prose h2 { font-size: 1.5em; margin-top: 1.5em; margin-bottom: 0.5em; color: #2d3748; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3em; }
+			.prose h3 { font-size: 1.25em; margin-top: 1.3em; margin-bottom: 0.3em; }
+			.prose code { background-color: #f7fafc; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; color: #e53e3e; font-family: monospace; }
+			.prose pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
+			
+			/* Modern Table Styles */
+			.prose table { width: 100%; margin: 2em 0; border-collapse: collapse; font-size: 0.95rem; }
+			.prose th { background-color: #f7fafc; color: #4a5568; font-weight: 600; text-align: left; padding: 10px; border-bottom: 2px solid #edf2f7; }
+			.prose td { padding: 10px; border-bottom: 1px solid #edf2f7; color: #4a5568; }
+			.prose tr:hover { background-color: #f8fafc; }
+
+			.date { color: #718096; font-size: 0.95rem; margin-bottom: 1rem; display: block; }
 		</style>
 	</head>
 
@@ -59,24 +46,11 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Header />
 		<main>
 			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
 				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
+					<div class="date">
+						<FormattedDate date={pubDate} />
 					</div>
+					<!-- Notice: We removed the duplicate {title} wrapper completely -->
 					<slot />
 				</div>
 			</article>
