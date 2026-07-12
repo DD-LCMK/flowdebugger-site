@@ -103,7 +103,7 @@ const blog = defineCollection({
 		return {
 			title: data.meta_title || data.title || "Untitled Post",
 			description: data.meta_description || data.description || "",
-			pubDate: data.pubDate || new Date(),
+			pubDate: data.pubDate, // Corrected: Keeps missing dates undefined so they drop to the bottom
 			shortenedSlug: shortSlug,
 			tags: inferredTags,
 		};
