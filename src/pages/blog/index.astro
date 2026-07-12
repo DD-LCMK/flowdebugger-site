@@ -109,12 +109,12 @@ const posts = (await getCollection('blog')).sort(
 		</main>
 		<Footer />
 
-		<!-- Client-Side Filter Script -->
+		<!-- Client-Side Filter Script with URL Parameter Support -->
 		<script>
 			const searchBox = document.getElementById('search-box') as HTMLInputElement;
 			const postElements = document.querySelectorAll('main ul li');
 
-			searchBox?.addEventListener('input', () => {
+			function filterPosts() {
 				const query = searchBox.value.toLowerCase().trim();
 
 				postElements.forEach((post) => {
@@ -129,6 +129,19 @@ const posts = (await getCollection('blog')).sort(
 						(post as HTMLElement).style.display = 'none';
 					}
 				});
+			}
+
+			// Listen for typing events inside the input field
+			searchBox?.addEventListener('input', filterPosts);
+
+			// Check URL parameters on page load to handle homepage form submission and quick badges
+			window.addEventListener('DOMContentLoaded', () => {
+				const urlParams = new URLSearchParams(window.location.search);
+				const urlQuery = urlParams.get('q');
+				if (urlQuery && searchBox) {
+					searchBox.value = urlQuery;
+					filterPosts();
+				}
 			});
 		</script>
 	</body>
