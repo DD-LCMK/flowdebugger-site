@@ -1,0 +1,56 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title="Developer Utilities & Debugging Tools | ErrorLedger" description="Free, client-side developer tools including a Unix Epoch Converter, JWT Decoder, Base64 Converter, and JSON Formatter." />
+		<style>
+			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 3em 1rem; }
+			h1 { font-size: 2.25rem; margin-bottom: 0.5rem; color: #1a202c; }
+			p.subtitle { color: #475569; margin-bottom: 2.5rem; font-size: 1.1rem; }
+			
+			.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+			.tool-card { display: block; text-decoration: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+			.tool-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-color: #ef4444; }
+			.tool-title { display: block; font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+			.tool-desc { display: block; font-size: 0.9rem; color: #475569; line-height: 1.5; }
+
+			/* Dark Mode */
+			:global(html.dark) h1 { color: #f8fafc; }
+			:global(html.dark) .subtitle { color: #cbd5e1; }
+			:global(html.dark) .tool-card { background: #1e293b; border-color: #334155; }
+			:global(html.dark) .tool-title { color: #f8fafc; }
+			:global(html.dark) .tool-desc { color: #cbd5e1; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Developer Utilities</h1>
+			<p class="subtitle">A collection of lightweight, secure, 100% client-side tools to help you debug production issues faster.</p>
+
+			<div class="tools-grid">
+				<a href="/tools/epoch-converter" class="tool-card">
+					<span class="tool-title">⏱️ Unix Epoch Converter</span>
+					<span class="tool-desc">Convert raw timestamps into human-readable UTC and local time arrays, or run precise time-offset calculations.</span>
+				</a>
+				<a href="/tools/jwt-decoder" class="tool-card">
+					<span class="tool-title">🔐 JWT Decoder</span>
+					<span class="tool-desc">Decode JSON Web Tokens locally in your browser to instantly inspect metadata headers, payload claims, and signatures.</span>
+				</a>
+				<a href="/tools/base64-converter" class="tool-card">
+					<span class="tool-title">📦 Base64 Converter</span>
+					<span class="tool-desc">Encode plain string text into Base64 format or safely parse raw authorization tokens and webhook payloads.</span>
+				</a>
+				<a href="/tools/json-formatter" class="tool-card">
+					<span class="tool-title">🧹 JSON Formatter & Minifier</span>
+					<span class="tool-desc">Validate messy JSON strings, format them into readable nested tree structures, or minify them to remove whitespace.</span>
+				</a>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
