@@ -4,18 +4,18 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
-import versions from '../data/versions.json'; // Imports the automated static version data layer
+import versions from '../data/versions.json';
 
 const allPosts = await getCollection('blog');
 
-// Safe sorting: prevents crashes if pubDate is missing or undefined[cite: 14]
+// Safe sorting: prevents crashes if pubDate is missing or undefined
 const posts = allPosts.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
 	return dateB - dateA;
 });
 
-// Only display the 3 most recent solutions on the landing page[cite: 14]
+// Only display the 3 most recent solutions on the landing page
 const recentPosts = posts.slice(0, 3);
 ---
 
@@ -25,12 +25,12 @@ const recentPosts = posts.slice(0, 3);
 		<style>
 			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 1.5em 1rem; }
 			
-			/* Tighter Hero Layout to bring content above the fold[cite: 14] */
+			/* Tighter Hero Layout to bring content above the fold */
 			.hero { text-align: center; margin-bottom: 2.5rem; padding: 1rem 0; }
 			.hero h1 { font-size: 2.75rem; margin-bottom: 0.75rem; letter-spacing: -0.025em; }
 			.hero p { font-size: 1.15rem; color: #475569; max-width: 650px; margin: 0 auto 1.75rem auto; line-height: 1.5; }
 			
-			/* Hero Search Field[cite: 14] */
+			/* Hero Search Field */
 			.search-form { max-width: 600px; margin: 0 auto 1.25rem auto; }
 			.search-input {
 				width: 100%;
@@ -45,7 +45,7 @@ const recentPosts = posts.slice(0, 3);
 			}
 			.search-input:focus { border-color: #ef4444; }
 
-			/* Category Quick Filters[cite: 14] */
+			/* Category Quick Filters */
 			.badge-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
 			.badge {
 				text-decoration: none;
@@ -66,7 +66,15 @@ const recentPosts = posts.slice(0, 3);
 			.pkg-name { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 0.25rem; }
 			.pkg-version { font-size: 1.15rem; font-weight: 700; color: #0f172a; font-family: monospace; }
 
-			/* Content Feed Grid Layout[cite: 14] */
+			/* Developer Utilities Section */
+			.tools-dashboard { margin-bottom: 2.5rem; }
+			.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+			.tool-card { display: block; text-decoration: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+			.tool-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-color: #ef4444; }
+			.tool-title { display: block; font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.25rem; }
+			.tool-desc { display: block; font-size: 0.85rem; color: #475569; line-height: 1.4; }
+
+			/* Content Feed Grid Layout */
 			.feed-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 1.25rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
 			ul { display: flex; flex-direction: column; gap: 1.5rem; list-style-type: none; margin: 0 0 2rem 0; padding: 0; }
 			ul li {
@@ -99,7 +107,7 @@ const recentPosts = posts.slice(0, 3);
 			}
 			.view-all-btn:hover { background: #ef4444; }
 
-			/* Dark Mode Overrides[cite: 14] */
+			/* Dark Mode Overrides */
 			:global(html.dark) .hero p { color: #cbd5e1; }
 			:global(html.dark) .search-input { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
 			:global(html.dark) .badge { background: #1e293b; color: #cbd5e1; }
@@ -111,12 +119,17 @@ const recentPosts = posts.slice(0, 3);
 			:global(html.dark) .view-all-btn { background: #1e293b; border: 1px solid #334155; }
 			:global(html.dark) .view-all-btn:hover { background: #ef4444; border-color: #ef4444; }
 			
-			/* Version Matrix Dark Mode Handling */
+			/* Version Matrix Dark Mode */
 			:global(html.dark) .version-card { background: #1e293b; border-color: #334155; }
 			:global(html.dark) .pkg-name { color: #cbd5e1; }
 			:global(html.dark) .pkg-version { color: #ef4444; }
 
-			/* Metadata Tag Dark Mode Handling[cite: 14] */
+			/* Tools Dashboard Dark Mode */
+			:global(html.dark) .tool-card { background: #1e293b; border-color: #334155; }
+			:global(html.dark) .tool-title { color: #f8fafc; }
+			:global(html.dark) .tool-desc { color: #cbd5e1; }
+
+			/* Metadata Tag Dark Mode Handling */
 			:global(html.dark) .card-tag {
 				background: #334155 !important;
 				color: #cbd5e1 !important;
@@ -130,7 +143,6 @@ const recentPosts = posts.slice(0, 3);
 				<h1>Search Production Error Fixes</h1>
 				<p>Verified, step-by-step troubleshooting runbooks for Node.js, databases, cloud platforms, and modern backend frameworks.</p>
 				
-				<!-- Optimized Search Form[cite: 14] -->
 				<form action="/blog" method="GET" class="search-form">
 					<input 
 						type="text" 
@@ -141,7 +153,6 @@ const recentPosts = posts.slice(0, 3);
 					/>
 				</form>
 
-				<!-- Quick Filters[cite: 14] -->
 				<div class="badge-container">
 					<a href="/blog?q=supabase" class="badge">Supabase</a>
 					<a href="/blog?q=stripe" class="badge">Stripe</a>
@@ -164,6 +175,18 @@ const recentPosts = posts.slice(0, 3);
 				</div>
 			</section>
 
+			<!-- New Developer Utilities Dashboard -->
+			<section class="tools-dashboard">
+				<h3 class="feed-title">Developer Utilities</h3>
+				<div class="tools-grid">
+					<a href="/tools/epoch-converter" class="tool-card">
+						<span class="tool-title">⏱️ Unix Epoch Converter</span>
+						<span class="tool-desc">Convert raw timestamps into human-readable UTC and local time arrays instantly client-side.</span>
+					</a>
+					<!-- Placeholders for future tools can go right next to it -->
+				</div>
+			</section>
+
 			<section>
 				<h3 class="feed-title">Latest Error Fixes</h3>
 				<ul>
@@ -171,7 +194,6 @@ const recentPosts = posts.slice(0, 3);
 						recentPosts.map((post) => (
 							<li>
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
-									<!-- Metadata Tag Row[cite: 14] -->
 									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
 										{post.data.tags.map((tag: string) => (
 											<span style="font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;" class="card-tag">
