@@ -39,9 +39,11 @@ const { title, description, pubDate } = Astro.props;
 			<article>
 				<div class="prose">
 					<div class="meta-wrapper">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-						</div>
+						{pubDate && (
+							<div class="date">
+								<FormattedDate date={pubDate} />
+							</div>
+						)}
 						<div class="share-actions">
 							<!-- X / Twitter Intent -->
 							<a href={`https://x.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer" class="share-btn">
