@@ -91,7 +91,7 @@ const posts = (await getCollection('blog')).sort(
 					<input 
 						type="text" 
 						id="search-box" 
-						placeholder="Search error codes, frameworks, or keywords..." 
+						placeholder="Search error messages, stack traces, SDKs, or frameworks..." 
 						aria-label="Search posts"
 					/>
 				</div>
@@ -124,7 +124,7 @@ const posts = (await getCollection('blog')).sort(
 		</main>
 		<Footer />
 
-		<!-- Client-Side Filter Script with URL Parameter Support -->
+		<!-- Client-Side Filter Script with URL Parameter & Tag Support -->
 		<script>
 			const searchBox = document.getElementById('search-box') as HTMLInputElement;
 			const postElements = document.querySelectorAll('main ul li');
@@ -135,10 +135,16 @@ const posts = (await getCollection('blog')).sort(
 				postElements.forEach((post) => {
 					const titleElement = post.querySelector('.title');
 					const descElement = post.querySelector('.description');
+					// Capture all card tags within the current loop element
+					const tagElements = post.querySelectorAll('.card-tag');
+					
 					const titleText = titleElement?.textContent?.toLowerCase() || '';
 					const descText = descElement?.textContent?.toLowerCase() || '';
+					// Flatten tag values into a readable comparative string string
+					const tagsText = Array.from(tagElements).map(tag => tag.textContent?.toLowerCase() || '').join(' ');
 					
-					if (titleText.includes(query) || descText.includes(query)) {
+					// Match query parameters against tags array text data points
+					if (titleText.includes(query) || descText.includes(query) || tagsText.includes(query)) {
 						(post as HTMLElement).style.display = '';
 					} else {
 						(post as HTMLElement).style.display = 'none';
