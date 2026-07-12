@@ -17,13 +17,15 @@ const recentPosts = posts.slice(0, 3);
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
-			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 3em 1rem; }
-			.hero { text-align: center; margin-bottom: 4rem; padding: 2rem 0; }
-			.hero h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-			.hero p { font-size: 1.2rem; color: #4a5568; max-width: 600px; margin: 0 auto 2rem auto; }
+			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 1.5em 1rem; }
+			
+			/* Tighter Hero Layout to bring content above the fold */
+			.hero { text-align: center; margin-bottom: 2.5rem; padding: 1rem 0; }
+			.hero h1 { font-size: 2.75rem; margin-bottom: 0.75rem; letter-spacing: -0.025em; }
+			.hero p { font-size: 1.15rem; color: #475569; max-width: 650px; margin: 0 auto 1.75rem auto; line-height: 1.5; }
 			
 			/* Hero Search Field */
-			.search-form { max-width: 600px; margin: 0 auto 1.5rem auto; }
+			.search-form { max-width: 600px; margin: 0 auto 1.25rem auto; }
 			.search-input {
 				width: 100%;
 				padding: 0.85rem 1.25rem;
@@ -38,7 +40,7 @@ const recentPosts = posts.slice(0, 3);
 			.search-input:focus { border-color: #ef4444; }
 
 			/* Category Quick Filters */
-			.badge-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+			.badge-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
 			.badge {
 				text-decoration: none;
 				background: #f1f5f9;
@@ -52,7 +54,7 @@ const recentPosts = posts.slice(0, 3);
 			.badge:hover { background: #ef4444; color: white; }
 
 			/* Content Feed Grid Layout */
-			.feed-title { font-size: 1.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+			.feed-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 1.25rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
 			ul { display: flex; flex-direction: column; gap: 1.5rem; list-style-type: none; margin: 0 0 2rem 0; padding: 0; }
 			ul li {
 				background: #ffffff;
@@ -72,7 +74,7 @@ const recentPosts = posts.slice(0, 3);
 			.description { margin: 0 0 1rem 0; color: #4a5568; font-size: 0.95rem; line-height: 1.5; }
 			.date { color: #718096; font-size: 0.85rem; }
 
-			.view-all-container { text-align: center; margin-top: 3rem; }
+			.view-all-container { text-align: center; margin-top: 2.5rem; }
 			.view-all-btn {
 				display: inline-block;
 				text-decoration: none;
@@ -102,16 +104,16 @@ const recentPosts = posts.slice(0, 3);
 		<Header />
 		<main>
 			<section class="hero">
-				<h1>Welcome to ErrorLedger</h1>
-				<p>Straightforward, step-by-step troubleshooting guides for modern developers.</p>
+				<h1>Search Production Error Fixes</h1>
+				<p>Verified, step-by-step troubleshooting runbooks for Node.js, databases, cloud platforms, and modern backend frameworks.</p>
 				
-				<!-- Hero Search Form -->
+				<!-- Optimized Search Form -->
 				<form action="/blog" method="GET" class="search-form">
 					<input 
 						type="text" 
 						name="q" 
 						class="search-input"
-						placeholder="Search error codes, frameworks, or keywords..." 
+						placeholder="Search error messages, stack traces, SDKs, or frameworks..." 
 						autocomplete="off"
 					/>
 				</form>
@@ -127,7 +129,7 @@ const recentPosts = posts.slice(0, 3);
 			</section>
 
 			<section>
-				<h3 class="feed-title">Latest Solutions</h3>
+				<h3 class="feed-title">Latest Error Fixes</h3>
 				<ul>
 					{
 						recentPosts.map((post) => (
