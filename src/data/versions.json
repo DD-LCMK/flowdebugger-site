@@ -1,0 +1,8 @@
+[
+  { "name": "Node.js", "version": "v24.x" },
+  { "name": "Next.js", "version": "v15.x" },
+  { "name": "Prisma ORM", "version": "v6.x" },
+  { "name": "Supabase JS", "version": "v2.x" },
+  { "name": "Clerk Backend", "version": "v5.x" },
+  { "name": "Stripe Node", "version": "v14.x" }
+]
