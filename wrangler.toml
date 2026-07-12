@@ -1,4 +1,4 @@
-name = "flowdebugger-site"
+name = 'errorledger-site'
 compatibility_date = "2026-07-11"
 
 [assets]
