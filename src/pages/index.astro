@@ -8,14 +8,29 @@ import versions from '../data/versions.json';
 
 const allPosts = await getCollection('blog');
 
-// Safe sorting: prevents crashes if pubDate is missing or undefined
+// 1. Count occurrences of each tag across all existing posts
+const tagCounts: Record<string, number> = {};
+allPosts.forEach(post => {
+	if (post.data.tags) {
+		post.data.tags.forEach((tag: string) => {
+			tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+		});
+	}
+});
+
+// 2. Sort tags by frequency and pick the top 5 biggest topics
+const topTags = Object.entries(tagCounts)
+	.sort((a, b) => b[1] - a[1])
+	.map(entry => entry[0])
+	.slice(0, 5);
+
+// Safe sorting for recent posts
 const posts = allPosts.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
 	return dateB - dateA;
 });
 
-// Only display the 3 most recent solutions on the landing page
 const recentPosts = posts.slice(0, 3);
 ---
 
@@ -154,11 +169,9 @@ const recentPosts = posts.slice(0, 3);
 				</form>
 
 				<div class="badge-container">
-					<a href="/blog?q=supabase" class="badge">Supabase</a>
-					<a href="/blog?q=stripe" class="badge">Stripe</a>
-					<a href="/blog?q=clerk" class="badge">Clerk</a>
-					<a href="/blog?q=next.js" class="badge">Next.js</a>
-					<a href="/blog?q=node" class="badge">Node.js</a>
+					{topTags.map((tag) => (
+						<a href={`/blog?q=${tag.toLowerCase()}`} class="badge">{tag}</a>
+					))}
 				</div>
 			</section>
 
