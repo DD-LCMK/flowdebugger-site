@@ -31,6 +31,26 @@ const techArticleSchema = JSON.stringify({
 		"url": "https://errorledger.com"
 	}
 });
+
+// Formats a clean Breadcrumb List to display a safe category tree inside Google Search instead of raw URLs
+const breadcrumbSchema = JSON.stringify({
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	"itemListElement": [
+		{
+			"@type": "ListItem",
+			"position": 1,
+			"name": "Home",
+			"item": "https://errorledger.com"
+		},
+		{
+			"@type": "ListItem",
+			"position": 2,
+			"name": "Blog",
+			"item": "https://errorledger.com/blog"
+		}
+	]
+});
 ---
 
 <!-- Global Metadata -->
@@ -55,8 +75,9 @@ const techArticleSchema = JSON.stringify({
 <title>{title}</title>
 <meta name="description" content={description} />
 
-<!-- TechArticle JSON-LD Schema (Invisible Structured Data Integration) -->
+<!-- Invisible Structured Search Schemas Injection -->
 <script type="application/ld+json" set:html={techArticleSchema}></script>
+<script type="application/ld+json" set:html={breadcrumbSchema}></script>
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
