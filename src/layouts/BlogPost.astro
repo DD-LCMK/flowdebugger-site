@@ -23,33 +23,51 @@ const cleanSeoTitle = `${visualTag}${title}`;
 			.prose h1 { font-size: 2.25em; margin-top: 0; margin-bottom: 0.8em; color: #1a202c; line-height: 1.2; }
 			.prose h2 { font-size: 1.5em; margin-top: 1.5em; margin-bottom: 0.5em; color: #2d3748; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3em; }
 			
-			/* Code Block Container adjustments */
-			.prose pre { position: relative; padding: 1.5rem 1rem 1rem 1rem; border-radius: 6px; }
-			.prose code { background-color: #f7fafc; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; color: #e53e3e; font-family: monospace; }
-			.prose pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
-			
-			/* Code Block Snippet Copy Button Styles */
-			.code-copy-btn {
-				position: absolute;
-				top: 0.5rem;
-				right: 0.5rem;
-				background: #ffffff;
-				border: 1px solid #cbd5e1;
-				padding: 0.25rem 0.5rem;
-				border-radius: 4px;
-				font-size: 0.75rem;
-				cursor: pointer;
-				color: #334155;
-				font-weight: 500;
-				transition: opacity 0.2s ease, background 0.2s ease;
-				opacity: 0; /* Hidden by default, fades in on hover */
+			/* Global overrides to target elements inside the markdown <slot /> safely */
+			.prose :global(pre) { 
+				position: relative !important; 
+				padding: 2.75rem 1rem 1.25rem 1rem !important; 
+				border-radius: 8px !important; 
+				box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
 			}
-			.prose pre:hover .code-copy-btn { opacity: 1; }
-			.code-copy-btn:hover { background: #f8fafc; border-color: #94a3b8; }
+			.prose :global(code) { background-color: #f7fafc; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; color: #e53e3e; font-family: monospace; }
+			.prose :global(pre code) { background-color: transparent !important; padding: 0 !important; color: inherit !important; font-size: inherit !important; }
+			
+			/* Premium Modern Code Block Copy Button Styles */
+			.prose :global(.code-copy-btn) {
+				position: absolute !important;
+				top: 0.75rem !important;
+				right: 0.75rem !important;
+				background: #ffffff !important;
+				border: 1px solid #e2e8f0 !important;
+				padding: 0.35rem 0.65rem !important;
+				border-radius: 6px !important;
+				font-size: 0.75rem !important;
+				font-family: system-ui, -apple-system, sans-serif !important;
+				cursor: pointer !important;
+				color: #475569 !important;
+				font-weight: 600 !important;
+				transition: all 0.15s ease-in-out !important;
+				opacity: 0; /* Hidden until container hover */
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+				z-index: 10 !important;
+			}
+			
+			/* Show copy button clearly when hovering over the code snippet box */
+			.prose :global(pre:hover .code-copy-btn) { 
+				opacity: 1 !important; 
+			}
+			
+			.prose :global(.code-copy-btn:hover) { 
+				background: #f8fafc !important; 
+				border-color: #cbd5e1 !important;
+				color: #0f172a !important;
+				transform: translateY(-1px);
+			}
 
-			.prose table { width: 100%; margin: 2em 0; border-collapse: collapse; }
-			.prose th { background-color: #f7fafc; padding: 10px; border-bottom: 2px solid #edf2f7; text-align: left; }
-			.prose td { padding: 10px; border-bottom: 1px solid #edf2f7; }
+			.prose :global(table) { width: 100%; margin: 2em 0; border-collapse: collapse; }
+			.prose :global(th) { background-color: #f7fafc; padding: 10px; border-bottom: 2px solid #edf2f7; text-align: left; }
+			.prose :global(td) { padding: 10px; border-bottom: 1px solid #edf2f7; }
 			
 			/* Share Actions Styles */
 			.meta-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px dashed #e2e8f0; }
@@ -58,14 +76,20 @@ const cleanSeoTitle = `${visualTag}${title}`;
 			.share-btn { background: #ffffff; border: 1px solid #cbd5e1; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; color: #334155; text-decoration: none; font-weight: 500; }
 			.share-btn:hover { background: #f8fafc; border-color: #94a3b8; color: #0f172a; }
 
-			/* Dark Mode Overrides for Code Copy Buttons */
-			:global(html.dark) .code-copy-btn {
-				background: #334155;
-				border-color: #475569;
-				color: #f8fafc;
+			/* Premium Dark Mode Styles for the Code Copy Blocks */
+			:global(html.dark) .prose :global(.code-copy-btn) {
+				background: #1e293b !important;
+				border-color: #334155 !important;
+				color: #cbd5e1 !important;
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 			}
-			:global(html.dark) .code-copy-btn:hover {
-				background: #475569;
+			:global(html.dark) .prose :global(.code-copy-btn:hover) {
+				background: #273549 !important;
+				border-color: #475569 !important;
+				color: #f8fafc !important;
+			}
+			:global(html.dark) .prose :global(pre) {
+				box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
 			}
 		</style>
 	</head>
