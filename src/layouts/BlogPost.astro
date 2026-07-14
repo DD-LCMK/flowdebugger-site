@@ -22,8 +22,31 @@ const cleanSeoTitle = `${visualTag}${title}`;
 			.prose { color: #2d3748; line-height: 1.75; font-size: 1.1rem; }
 			.prose h1 { font-size: 2.25em; margin-top: 0; margin-bottom: 0.8em; color: #1a202c; line-height: 1.2; }
 			.prose h2 { font-size: 1.5em; margin-top: 1.5em; margin-bottom: 0.5em; color: #2d3748; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3em; }
+			
+			/* Code Block Container adjustments */
+			.prose pre { position: relative; padding: 1.5rem 1rem 1rem 1rem; border-radius: 6px; }
 			.prose code { background-color: #f7fafc; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; color: #e53e3e; font-family: monospace; }
 			.prose pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
+			
+			/* Code Block Snippet Copy Button Styles */
+			.code-copy-btn {
+				position: absolute;
+				top: 0.5rem;
+				right: 0.5rem;
+				background: #ffffff;
+				border: 1px solid #cbd5e1;
+				padding: 0.25rem 0.5rem;
+				border-radius: 4px;
+				font-size: 0.75rem;
+				cursor: pointer;
+				color: #334155;
+				font-weight: 500;
+				transition: opacity 0.2s ease, background 0.2s ease;
+				opacity: 0; /* Hidden by default, fades in on hover */
+			}
+			.prose pre:hover .code-copy-btn { opacity: 1; }
+			.code-copy-btn:hover { background: #f8fafc; border-color: #94a3b8; }
+
 			.prose table { width: 100%; margin: 2em 0; border-collapse: collapse; }
 			.prose th { background-color: #f7fafc; padding: 10px; border-bottom: 2px solid #edf2f7; text-align: left; }
 			.prose td { padding: 10px; border-bottom: 1px solid #edf2f7; }
@@ -34,6 +57,16 @@ const cleanSeoTitle = `${visualTag}${title}`;
 			.share-actions { display: flex; gap: 0.5rem; }
 			.share-btn { background: #ffffff; border: 1px solid #cbd5e1; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; color: #334155; text-decoration: none; font-weight: 500; }
 			.share-btn:hover { background: #f8fafc; border-color: #94a3b8; color: #0f172a; }
+
+			/* Dark Mode Overrides for Code Copy Buttons */
+			:global(html.dark) .code-copy-btn {
+				background: #334155;
+				border-color: #475569;
+				color: #f8fafc;
+			}
+			:global(html.dark) .code-copy-btn:hover {
+				background: #475569;
+			}
 		</style>
 	</head>
 
@@ -66,6 +99,7 @@ const cleanSeoTitle = `${visualTag}${title}`;
 		<Footer />
 
 		<script>
+			// 1. Handle main layout page URL share copy action
 			const copyBtn = document.getElementById('copy-link-btn');
 			if (copyBtn) {
 				copyBtn.addEventListener('click', () => {
@@ -77,6 +111,31 @@ const cleanSeoTitle = `${visualTag}${title}`;
 					}, 2000);
 				});
 			}
+
+			// 2. Dynamically find all code snippet containers inside post prose and attach local copy buttons
+			const codeBlocks = document.querySelectorAll('.prose pre');
+			codeBlocks.forEach((block) => {
+				const button = document.createElement('button');
+				button.className = 'code-copy-btn';
+				button.textContent = 'Copy';
+				block.appendChild(button);
+
+				button.addEventListener('click', async () => {
+					const codeElement = block.querySelector('code');
+					// Fallback to pre text if nested code tag isn't explicitly processed
+					const textToCopy = codeElement ? codeElement.innerText : (block as HTMLElement).innerText;
+					
+					try {
+						await navigator.clipboard.writeText(textToCopy);
+						button.textContent = 'Copied!';
+						setTimeout(() => {
+							button.textContent = 'Copy';
+						}, 2000);
+					} catch (err) {
+						console.error('Failed to copy code snippet text: ', err);
+					}
+				});
+			});
 		</script>
 	</body>
 </html>
