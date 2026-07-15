@@ -3,7 +3,11 @@ const today = new Date();
 ---
 
 <footer>
-	&copy; {today.getFullYear()} ErrorLedger. All rights reserved.
+	<div class="footer-content">
+		<span>&copy; {today.getFullYear()} ErrorLedger. All rights reserved.</span>
+		<span class="separator">|</span>
+		<a href="/privacy" class="footer-link">Privacy Policy</a>
+	</div>
 	<style>
 		footer {
 			padding: 2rem 1rem 3rem 1rem;
@@ -13,9 +17,31 @@ const today = new Date();
 			border-top: 1px solid #e4e4e7;
 			margin-top: auto;
 		}
+		.footer-content {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+		}
+		.footer-link {
+			color: inherit;
+			text-decoration: none;
+			transition: color 0.15s ease;
+		}
+		.footer-link:hover {
+			color: #ef4444;
+			text-decoration: underline;
+		}
+		.separator {
+			color: #cbd5e1;
+		}
 		:global(html.dark) footer {
 			border-top-color: #334155;
 			color: #94a3b8;
+		}
+		:global(html.dark) .separator {
+			color: #475569;
 		}
 	</style>
 </footer>
