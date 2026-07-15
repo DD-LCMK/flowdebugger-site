@@ -7,7 +7,7 @@ import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
 
-// Safe sorting: prevents crashes if pubDate is missing or undefined
+// Guard against missing dates when ordering logs
 const posts = allPosts.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
@@ -35,10 +35,10 @@ const posts = allPosts.sort((a, b) => {
 			}
 			.title { margin: 0 0 0.5rem 0; font-size: 1.35rem; color: #1a202c; line-height: 1.3; }
 			ul li a { text-decoration: none; }
-			ul li a:hover .title { color: #3182ce; }
+			ul li a:hover .title { color: #ef4444; }
 			.description { margin: 0 0 1rem 0; color: #4a5568; font-size: 0.95rem; line-height: 1.5; }
 
-			/* Search Container Styling */
+			/* Search and Filtering Header */
 			.search-container {
 				margin-bottom: 2rem;
 				width: 100%;
@@ -53,12 +53,31 @@ const posts = allPosts.sort((a, b) => {
 				color: #1e293b;
 				outline: none;
 				font-family: inherit;
+				transition: border-color 0.15s ease;
 			}
 			#search-box:focus {
 				border-color: #ef4444;
 			}
 
-			/* Local Card Dark Mode Overrides */
+			/* 3-Tier Tag Layout badge row */
+			.tag-row {
+				display: flex;
+				gap: 0.5rem;
+				margin-bottom: 0.5rem;
+				flex-wrap: wrap;
+			}
+			.card-tag {
+				font-size: 0.72rem;
+				font-weight: 700;
+				background: #f1f5f9;
+				color: #475569;
+				padding: 0.15rem 0.45rem;
+				border-radius: 4px;
+				text-transform: uppercase;
+				letter-spacing: 0.025em;
+			}
+
+			/* Premium Dark Mode Overrides */
 			:global(html.dark) ul li {
 				background: #1e293b;
 				border-color: #334155;
@@ -77,8 +96,6 @@ const posts = allPosts.sort((a, b) => {
 			:global(html.dark) #search-box:focus {
 				border-color: #ef4444;
 			}
-			
-			/* Metadata Tag Dark Mode Handling */
 			:global(html.dark) .card-tag {
 				background: #334155 !important;
 				color: #cbd5e1 !important;
@@ -89,13 +106,13 @@ const posts = allPosts.sort((a, b) => {
 		<Header />
 		<main>
 			<section>
-				<!-- Interactive Search Bar Component -->
+				<!-- Database Search Input Bar -->
 				<div class="search-container">
 					<input 
 						type="text" 
 						id="search-box" 
-						placeholder="Search error messages, stack traces, SDKs, or frameworks..." 
-						aria-label="Search posts"
+						placeholder="Filter incidents by platform, protocol, vector, root cause, or status..." 
+						aria-label="Filter incidents"
 					/>
 				</div>
 
@@ -104,10 +121,10 @@ const posts = allPosts.sort((a, b) => {
 						posts.map((post) => (
 							<li>
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
-									<!-- Metadata Tag Row -->
-									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+									<!-- Visual 3-Tier Tag List -->
+									<div class="tag-row">
 										{post.data.tags.map((tag: string) => (
-											<span style="font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;" class="card-tag">
+											<span class="card-tag">
 												{tag}
 											</span>
 										))}
@@ -124,7 +141,7 @@ const posts = allPosts.sort((a, b) => {
 		</main>
 		<Footer />
 
-		<!-- Client-Side Filter Script with URL Parameter & Tag Support -->
+		<!-- Client-Side Filter script -->
 		<script>
 			const searchBox = document.getElementById('search-box') as HTMLInputElement;
 			const postElements = document.querySelectorAll('main ul li');

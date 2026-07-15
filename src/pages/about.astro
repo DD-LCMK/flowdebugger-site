@@ -4,16 +4,34 @@ import Layout from '../layouts/BlogPost.astro';
 
 <Layout
 	title="About ErrorLedger"
-	description="What is ErrorLedger and why it exists."
-	pubDate={new Date('July 11 2026')}
+	meta_title="About ErrorLedger: Incident Research Methodology"
+	description="Learn about the technical research framework, zero-trust data gathering standards, and sourcing guidelines for the ErrorLedger incident database."
+	pubDate={new Date('July 15, 2026')}
+	tags={["meta", "methodology", "research"]}
 >
+	<h2>Our Mission</h2>
 	<p>
-		Welcome to <strong>ErrorLedger</strong>. This site is a dedicated repository of straightforward, 
-		no-nonsense troubleshooting guides designed to fix common integration errors, runtime bugs, and configuration quirks.
+		<strong>ErrorLedger</strong> is an independent, zero-trust technology incident database and deep-dive post-mortem research library[cite: 37]. We bypass generic media headlines to dissect the exact technical, physical, and software-driven root causes that trigger major global network failures[cite: 37].
+	</p>
+	<p>
+		Our analyses translate real-world disaster scenarios into evergreen architectural lessons, helping systems engineers, software architects, and security operations teams build resilient, self-healing platforms[cite: 37].
 	</p>
 
+	<h2>The Sourcing Hierarchy</h2>
 	<p>
-		The goal is simple: document exact error signatures—from Firebase and Clerk to Stripe and modern web frameworks—and 
-		provide the immediate, concrete code fixes needed to get development back on track without digging through hours of documentation.
+		To prevent inaccuracy, speculation, and AI hallucinations, every incident record in our database is strictly compiled using a rigid primary-source authentication hierarchy:
+	</p>
+	<ul>
+		<li><strong>Tier 1 — Official Root Cause Analyses (RCAs):</strong> Post-mortem documentations, security advisories, and service health reports issued directly by the affected platforms.</li>
+		<li><strong>Tier 2 — Threat Intel & Incident Forensics:</strong> Technical deconstructions from certified threat intelligence firms and verified engineering security blogs.</li>
+		<li><strong>Tier 3 — Telemetry Logs:</strong> Public network route announcements, DNS records, and transaction ledger states.</li>
+	</ul>
+
+	<h2>Why We Do Not Generate Code Fixes</h2>
+	<p>
+		Unlike typical programming blogs or package documentation engines, ErrorLedger does not publish quick patches, temporary API workarounds, or localized configuration hacks[cite: 37]. 
+	</p>
+	<p>
+		Instead, we look at system-level behaviors—such as BGP routing cascades, out-of-bounds memory accesses in kernel space, or garbage collection deadlocks—to expose structural bugs and core trust boundary vulnerabilities[cite: 37]. We believe that truly understanding why a network collapsed is the most valuable step in preventing the next disaster.
 	</p>
 </Layout>

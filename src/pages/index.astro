@@ -4,11 +4,10 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
-import versions from '../data/versions.json';
 
 const allPosts = await getCollection('blog');
 
-// 1. Count occurrences of each tag dynamically across active posts
+// 1. Count occurrences of each tag dynamically across active incidents
 const tagCounts: Record<string, number> = {};
 allPosts.forEach(post => {
 	if (post.data.tags) {
@@ -18,20 +17,20 @@ allPosts.forEach(post => {
 	}
 });
 
-// 2. Extract only the top 5 tags with existing posts (hides empty topics)
+// 2. Extract the top 5 active tags
 const topTags = Object.entries(tagCounts)
 	.sort((a, b) => b[1] - a[1])
 	.map(entry => entry[0])
 	.slice(0, 5);
 
-// Safe sorting: prevents crashes if pubDate is missing or undefined
+// Safe sorting for incident records
 const posts = allPosts.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
 	return dateB - dateA;
 });
 
-// Only display the 3 most recent solutions
+// Display the 3 most recently disclosed incidents
 const recentPosts = posts.slice(0, 3);
 ---
 
@@ -43,7 +42,8 @@ const recentPosts = posts.slice(0, 3);
 			
 			/* Hero Layout for Search Section */
 			.hero { text-align: center; margin-bottom: 2.5rem; padding: 1rem 0; }
-			.hero h1 { font-size: 2.25rem; margin-bottom: 0.75rem; letter-spacing: -0.025em; }
+			.hero h1 { font-size: 2.25rem; margin-bottom: 0.75rem; letter-spacing: -0.025em; color: #0f172a; font-weight: 800; }
+			.hero h1 span { color: #ef4444; }
 			.hero p { font-size: 1.15rem; color: #475569; max-width: 650px; margin: 0 auto 1.75rem auto; line-height: 1.5; }
 			
 			/* Hero Search Field */
@@ -58,6 +58,7 @@ const recentPosts = posts.slice(0, 3);
 				color: #1e293b;
 				outline: none;
 				box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+				transition: border-color 0.15s ease;
 			}
 			.search-input:focus { border-color: #ef4444; }
 
@@ -75,14 +76,7 @@ const recentPosts = posts.slice(0, 3);
 			}
 			.badge:hover { background: #ef4444; color: white; }
 
-			/* Version Matrix Dashboard Grid Styles */
-			.version-dashboard { margin-bottom: 1rem; }
-			.version-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-			.version-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; text-align: center; }
-			.pkg-name { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 0.25rem; }
-			.pkg-version { font-size: 1.15rem; font-weight: 700; color: #0f172a; font-family: monospace; }
-
-			/* Developer Utilities Section */
+			/* Developer Diagnostics Section */
 			.tools-dashboard { margin-bottom: 2.5rem; }
 			.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 			.tool-card { display: block; text-decoration: none; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; transition: transform 0.2s ease, box-shadow 0.2s ease; }
@@ -107,7 +101,7 @@ const recentPosts = posts.slice(0, 3);
 			}
 			.title { margin: 0 0 0.5rem 0; font-size: 1.35rem; color: #1a202c; line-height: 1.3; }
 			ul li a { text-decoration: none; }
-			ul li a:hover .title { color: #3182ce; }
+			ul li a:hover .title { color: #ef4444; }
 			.description { margin: 0 0 1rem 0; color: #4a5568; font-size: 0.95rem; line-height: 1.5; }
 
 			.view-all-container { text-align: center; margin-top: 2.5rem; }
@@ -124,6 +118,7 @@ const recentPosts = posts.slice(0, 3);
 			.view-all-btn:hover { background: #ef4444; }
 
 			/* Dark Mode Overrides */
+			:global(html.dark) .hero h1 { color: #f8fafc; }
 			:global(html.dark) .hero p { color: #cbd5e1; }
 			:global(html.dark) .search-input { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
 			:global(html.dark) .badge { background: #1e293b; color: #cbd5e1; }
@@ -134,11 +129,6 @@ const recentPosts = posts.slice(0, 3);
 			:global(html.dark) .description { color: #cbd5e1; }
 			:global(html.dark) .view-all-btn { background: #1e293b; border: 1px solid #334155; }
 			:global(html.dark) .view-all-btn:hover { background: #ef4444; border-color: #ef4444; }
-			
-			/* Version Matrix Dark Mode */
-			:global(html.dark) .version-card { background: #1e293b; border-color: #334155; }
-			:global(html.dark) .pkg-name { color: #cbd5e1; }
-			:global(html.dark) .pkg-version { color: #ef4444; }
 
 			/* Tools Dashboard Dark Mode */
 			:global(html.dark) .tool-card { background: #1e293b; border-color: #334155; }
@@ -155,62 +145,63 @@ const recentPosts = posts.slice(0, 3);
 	<body>
 		<Header />
 		<main>
-			<!-- 1. Developer Utilities Section (Top) -->
-			<section class="tools-dashboard" style="margin-top: 1rem;">
-				<h3 class="feed-title">Developer Utilities</h3>
-				<div class="tools-grid">
-					<a href="/tools/epoch-converter" class="tool-card">
-						<span class="tool-title">⏱️ Unix Epoch Converter</span>
-						<span class="tool-desc">Convert raw timestamps into human-readable UTC and local time arrays instantly client-side.</span>
-					</a>
-					<a href="/tools/jwt-decoder" class="tool-card">
-						<span class="tool-title">🔐 JWT Decoder</span>
-						<span class="tool-desc">Decode JSON Web Tokens locally in your browser to instantly inspect metadata headers and claims.</span>
-					</a>
-					<a href="/tools/base64-converter" class="tool-card">
-						<span class="tool-title">📦 Base64 Converter</span>
-						<span class="tool-desc">Encode string data into Base64 formats or interpret raw authorization blocks securely.</span>
-					</a>
-					<a href="/tools/json-formatter" class="tool-card">
-						<span class="tool-title">🧹 JSON Formatter</span>
-						<span class="tool-desc">Validate, prettify, or minify complex nested JSON strings for easy debugging reading.</span>
-					</a>
-				</div>
-			</section>
-
-			<!-- 2. Search Section (Next) -->
-			<section class="hero">
-				<h1>Search Production Error Fixes</h1>
-				<p>Verified, step-by-step troubleshooting runbooks for databases, cloud infrastructure, AI integrations, and backend frameworks.</p>
+			<!-- 1. Search & Filter Hero Gateway -->
+			<section class="hero" style="margin-top: 1.5rem;">
+				<h1>Welcome to <span>ErrorLedger</span></h1>
+				<p>An independent, evergreen post-mortem analysis library documenting significant cloud infrastructure outages, cybersecurity breaches, and deep architectural failures.</p>
 				
 				<form action="/blog" method="GET" class="search-form">
 					<input 
 						type="text" 
 						name="q" 
 						class="search-input"
-						placeholder="Search error messages, stack traces, SDKs, or frameworks..." 
+						placeholder="Filter by platform, protocol, vector, or root cause..." 
 						autocomplete="off"
 					/>
 				</form>
 
 				<div class="badge-container">
 					{topTags.map((tag) => (
-						<a href={`/blog?q=${tag.toLowerCase()}`} class="badge">{tag}</a>
+						<a href={`/blog?q=${tag.toLowerCase()}`} class="badge">#{tag}</a>
 					))}
 				</div>
 			</section>
 
-			<!-- 3. Latest Error Fixes (Next) -->
+			<!-- 2. Developer Diagnostic Utilities -->
+			<section class="tools-dashboard">
+				<h3 class="feed-title">Diagnostic & Forensic Tools</h3>
+				<div class="tools-grid">
+					<a href="/tools/epoch-converter" class="tool-card">
+						<span class="tool-title">⏱️ Unix Epoch Converter</span>
+						<span class="tool-desc">Interpret raw incident timestamps into human-readable UTC and local time arrays client-side.</span>
+					</a>
+					<a href="/tools/jwt-decoder" class="tool-card">
+						<span class="tool-title">🔐 JWT Decoder</span>
+						<span class="tool-desc">Decode JSON Web Tokens locally to inspect authentication headers, claims, and token signatures.</span>
+					</a>
+					<a href="/tools/base64-converter" class="tool-card">
+						<span class="tool-title">📦 Base64 Converter</span>
+						<span class="tool-desc">Deconstruct string data payloads or sanitize encoded authorization blocks securely.</span>
+					</a>
+					<a href="/tools/json-formatter" class="tool-card">
+						<span class="tool-title">🧹 JSON Formatter</span>
+						<span class="tool-desc">Validate, prettify, or inspect complex API responses and configuration payloads.</span>
+					</a>
+				</div>
+			</section>
+
+			<!-- 3. Recently Disclosed Incidents -->
 			<section style="margin-bottom: 3.5rem;">
-				<h3 class="feed-title">Latest Error Fixes</h3>
+				<h3 class="feed-title">Recently Disclosed Incidents</h3>
 				<ul>
 					{
 						recentPosts.map((post) => (
 							<li>
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
+									<!-- 3-Tier Tag Badges Row -->
 									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
 										{post.data.tags.map((tag: string) => (
-											<span style="font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;" class="card-tag">
+											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
 												{tag}
 											</span>
 										))}
@@ -225,20 +216,7 @@ const recentPosts = posts.slice(0, 3);
 				</ul>
 				
 				<div class="view-all-container">
-					<a href="/blog" class="view-all-btn">View All Solutions →</a>
-				</div>
-			</section>
-
-			<!-- 4. Ecosystem Version Matrix Dashboard (Bottom) -->
-			<section class="version-dashboard">
-				<h3 class="feed-title">Ecosystem Version Matrix</h3>
-				<div class="version-grid">
-					{versions.map((pkg) => (
-						<div class="version-card">
-							<span class="pkg-name">{pkg.name}</span>
-							<span class="pkg-version">{pkg.version}</span>
-						</div>
-					))}
+					<a href="/blog" class="view-all-btn">View All Incident Records →</a>
 				</div>
 			</section>
 		</main>

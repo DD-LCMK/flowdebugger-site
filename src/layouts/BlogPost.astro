@@ -7,16 +7,15 @@ import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, tags = [] } = Astro.props;
+const { title, meta_title, description, pubDate, tags = [] } = Astro.props;
 
-// Automatically prefix the page title with the primary topic tag for search result clarity
-const visualTag = tags.length > 0 ? `[${tags[0].toUpperCase()}] ` : '';
-const cleanSeoTitle = `${visualTag}${title}`;
+// Prioritize your optimized, click-friendly search title
+const seoTitle = meta_title || title;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={cleanSeoTitle} description={description} />
+		<BaseHead title={seoTitle} description={description} />
 		<style>
 			main { width: calc(100% - 2rem); max-width: 720px; margin: 0 auto; padding: 3em 1rem; }
 			.prose { color: #2d3748; line-height: 1.75; font-size: 1.1rem; }
@@ -70,13 +69,26 @@ const cleanSeoTitle = `${visualTag}${title}`;
 			.prose :global(td) { padding: 10px; border-bottom: 1px solid #edf2f7; }
 			
 			/* Share Actions Styles */
-			.meta-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px dashed #e2e8f0; }
+			.meta-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed #e2e8f0; flex-wrap: wrap; gap: 1rem; }
 			.date { color: #718096; font-size: 0.95rem; }
 			.share-actions { display: flex; gap: 0.5rem; }
 			.share-btn { background: #ffffff; border: 1px solid #cbd5e1; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; color: #334155; text-decoration: none; font-weight: 500; }
 			.share-btn:hover { background: #f8fafc; border-color: #94a3b8; color: #0f172a; }
 
-			/* Premium Dark Mode Styles for the Code Copy Blocks */
+			/* 3-Tier Tag Layout badge row */
+			.tag-container { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+			.tag-badge { font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em; }
+
+			/* Premium Dark Mode Styles */
+			:global(html.dark) .prose { color: #cbd5e1; }
+			:global(html.dark) .prose h1, :global(html.dark) .prose h2 { color: #f8fafc; }
+			:global(html.dark) .prose :global(th) { background-color: #1e293b; border-bottom-color: #334155; }
+			:global(html.dark) .prose :global(td) { border-bottom-color: #334155; }
+			:global(html.dark) .meta-wrapper { border-bottom-color: #334155; }
+			:global(html.dark) .tag-badge { background: #334155; color: #cbd5e1; }
+			:global(html.dark) .share-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+			:global(html.dark) .share-btn:hover { background: #273549; border-color: #475569; color: #f8fafc; }
+
 			:global(html.dark) .prose :global(.code-copy-btn) {
 				background: #1e293b !important;
 				border-color: #334155 !important;
@@ -106,7 +118,7 @@ const cleanSeoTitle = `${visualTag}${title}`;
 							</div>
 						)}
 						<div class="share-actions">
-							<!-- X / Twitter Intent -->
+							<!-- X Share Intent -->
 							<a href={`https://x.com/intent/tweet?url=${encodeURIComponent(Astro.url.href)}&text=${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer" class="share-btn">
 								Share on X
 							</a>
@@ -116,6 +128,16 @@ const cleanSeoTitle = `${visualTag}${title}`;
 							</button>
 						</div>
 					</div>
+
+					<!-- Visual 3-Tier Tag Ledger Row -->
+					<div class="tag-container">
+						{tags.map((tag) => (
+							<span class="tag-badge">
+								{tag}
+							</span>
+						))}
+					</div>
+
 					<slot />
 				</div>
 			</article>
@@ -123,7 +145,7 @@ const cleanSeoTitle = `${visualTag}${title}`;
 		<Footer />
 
 		<script>
-			// 1. Handle main layout page URL share copy action
+			// Handle article URL sharing clipboard actions
 			const copyBtn = document.getElementById('copy-link-btn');
 			if (copyBtn) {
 				copyBtn.addEventListener('click', () => {
@@ -136,7 +158,7 @@ const cleanSeoTitle = `${visualTag}${title}`;
 				});
 			}
 
-			// 2. Dynamically find all code snippet containers inside post prose and attach local copy buttons
+			// Dynamically locate markdown pre containers and attach the modern copy utility
 			const codeBlocks = document.querySelectorAll('.prose pre');
 			codeBlocks.forEach((block) => {
 				const button = document.createElement('button');
@@ -146,7 +168,6 @@ const cleanSeoTitle = `${visualTag}${title}`;
 
 				button.addEventListener('click', async () => {
 					const codeElement = block.querySelector('code');
-					// Fallback to pre text if nested code tag isn't explicitly processed
 					const textToCopy = codeElement ? codeElement.innerText : (block as HTMLElement).innerText;
 					
 					try {
