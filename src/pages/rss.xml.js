@@ -1,16 +1,18 @@
-import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 export async function GET(context) {
 	const posts = await getCollection('blog');
 	return rss({
 		title: SITE_TITLE,
 		description: SITE_DESCRIPTION,
-		site: context.site,
+		site: context.site || 'https://errorledger.com',
 		items: posts.map((post) => ({
-			...post.data,
-			link: `/blog/${post.id}/`,
+			title: post.data.title,
+			description: post.data.description,
+			pubDate: post.data.pubDate,
+			link: `/blog/${post.data.shortenedSlug}/`,
 		})),
 	});
 }

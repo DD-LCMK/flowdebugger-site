@@ -3,31 +3,19 @@ const today = new Date();
 ---
 
 <footer>
-<div>&copy; {today.getFullYear()} ErrorLedger. All rights reserved.</div>
-<div class="footer-links">
-<a href="/privacy">Privacy Policy</a>
-</div>
+	&copy; {today.getFullYear()} ErrorLedger. All rights reserved.
+	<style>
+		footer {
+			padding: 2rem 1rem 3rem 1rem;
+			text-align: center;
+			font-size: 0.9rem;
+			color: rgb(var(--gray));
+			border-top: 1px solid #e4e4e7;
+			margin-top: auto;
+		}
+		:global(html.dark) footer {
+			border-top-color: #334155;
+			color: #94a3b8;
+		}
+	</style>
 </footer>
-
-<style>
-footer {
-padding: 2rem 1rem 3rem 1rem;
-background: linear-gradient(rgba(var(--gray-gradient), 0%), rgba(var(--gray-gradient), 5%)) no-repeat;
-color: rgb(var(--gray));
-text-align: center;
-font-size: 0.9rem;
-margin-top: 4rem;
-border-top: 1px solid rgba(var(--gray-light), 30%);
-}
-.footer-links {
-margin-top: 0.5rem;
-}
-footer a {
-color: rgb(var(--gray));
-text-decoration: underline;
-}
-footer a:hover {
-color: rgb(var(--black));
-}
-</style>
-

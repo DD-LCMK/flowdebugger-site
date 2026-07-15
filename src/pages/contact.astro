@@ -1,57 +1,30 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import Layout from '../layouts/BlogPost.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={`Contact | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
-		<style>
-			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 3em 1rem; }
-			h1 { font-size: 2.5rem; margin-bottom: 1.5rem; }
-			p { font-size: 1.1rem; line-height: 1.6; color: #4a5568; margin-bottom: 1.5rem; }
-			.email-box {
-				display: inline-block;
-				background: #f1f5f9;
-				padding: 0.75rem 1.25rem;
-				border-radius: 6px;
-				font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-				font-weight: 600;
-				color: #0f172a;
-				text-decoration: none;
-				border: 1px solid #e2e8f0;
-				transition: border-color 0.2s ease, color 0.2s ease;
-			}
-			.email-box:hover {
-				border-color: #ef4444;
-				color: #ef4444;
-			}
-			:global(html.dark) p { color: #cbd5e1; }
-			:global(html.dark) .email-box {
-				background: #1e293b;
-				color: #f8fafc;
-				border-color: #334155;
-			}
-			:global(html.dark) .email-box:hover {
-				color: #ef4444;
-				border-color: #ef4444;
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>Contact</h1>
-			<p>
-				Have a question, feedback, or a technical inquiry regarding any of the troubleshooting guides? Feel free to reach out via email.
-			</p>
-			<a href="mailto:contact@errorledger.com" class="email-box">
-				contact@errorledger.com
-			</a>
-		</main>
-		<Footer />
-	</body>
-</html>
+<Layout
+	title="Contact & Incident Submission"
+	meta_title="Submit Forensic Telemetry | ErrorLedger"
+	description="Submit technical root cause analysis files, forensic telemetry logs, or request post-mortem investigations from the ErrorLedger team."
+	pubDate={new Date('July 15, 2026')}
+	tags={["meta", "contact", "submissions"]}
+>
+	<h2>Incident Data Ingestion Portal</h2>
+	<p>
+		ErrorLedger functions as an independent technical reference. If you are a systems engineer, security researcher, or network administrator with validated post-mortem telemetry, we accept technical submissions.
+	</p>
+
+	<h3>Sourcing Verification Standard</h3>
+	<p>
+		To maintain database integrity, all external submissions must provide verifiable references to original datasets. This includes cryptographic transaction proofs, network routing table logs, or official security disclosure chains.
+	</p>
+
+	<h3>Submit a Record for Investigation</h3>
+	<p>
+		To propose a system failure for forensic analysis, or to submit verified telemetry, contact our registry operations team directly:
+	</p>
+	<ul>
+		<li><strong>Secure Intake Node:</strong> intake@errorledger.com</li>
+		<li><strong>Public Directory Queries:</strong> contact@errorledger.com</li>
+	</ul>
+</Layout>

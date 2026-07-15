@@ -1,22 +1,17 @@
-## Development
+# ErrorLedger Agent System Protocols
 
-When starting the dev server, use background mode:
+This file contains operational instructions for autonomous developer agents, local LLMs, and workspace scrapers executing pipeline workflows within this repository.
 
-```
-astro dev --background
-```
+## 1. Scope and Domain Constancy
+* This repository is an authoritative technical archive for technology incident post-mortems.
+* Do not write or recommend localized code repairs, configuration patches, or SDK quick-fixes.
+* Focus purely on documenting structural failures, distributed consensus bottlenecks, routing behaviors, and memory constraints.
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+## 2. Dynamic Router Rules
+* Every incident record must be mapped dynamically to its output file path using the `slug` frontmatter variable.
+* The content collection schema defined in `src/content.config.ts` acts as the strict baseline validator for all markdown generation passes.
 
-## Documentation
-
-Full documentation: https://docs.astro.build
-
-Consult these guides before working on related tasks:
-
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+## 3. SEO Standard Compliance
+* The `meta_title` must remain strictly under 60 characters.
+* The `description` must remain strictly between 120 and 155 characters.
+* The `tags` list must populate Platform, Vector, and Event classifications using 4 to 6 lowercase, hyphenated strings.
