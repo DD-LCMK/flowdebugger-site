@@ -1,3 +1,3 @@
 // Global site metadata
 export const SITE_TITLE = 'ErrorLedger';
-export const SITE_DESCRIPTION = 'An evergreen technology incident database and deep-dive post-mortem research library built for system architects, security researchers, and software engineers.';
+export const SITE_DESCRIPTION = 'An independent, zero-trust technology incident database and deep-dive post-mortem research library analyzing major cloud outages, cybersecurity breaches, and deep architectural failures.';
