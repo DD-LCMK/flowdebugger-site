@@ -117,20 +117,14 @@ const posts = postsWithYears.sort((a, b) => {
 				background: #1e293b;
 				border-color: #334155;
 			}
-			:global(html.dark) .title {
-				color: #f8fafc;
-			}
-			:global(html.dark) .description {
-				color: #cbd5e1;
-			}
+			:global(html.dark) .title { color: #f8fafc; }
+			:global(html.dark) .description { color: #cbd5e1; }
 			:global(html.dark) #search-box {
 				background-color: #1e293b;
 				border-color: #334155;
 				color: #f8fafc;
 			}
-			:global(html.dark) #search-box:focus {
-				border-color: #ef4444;
-			}
+			:global(html.dark) #search-box:focus { border-color: #ef4444; }
 			:global(html.dark) .card-tag {
 				background: #334155 !important;
 				color: #cbd5e1 !important;
@@ -176,12 +170,13 @@ const posts = postsWithYears.sort((a, b) => {
 		</main>
 		<Footer />
 
-		<!-- Explicitly declare script as TypeScript to support type assertions -->
 		<script lang="ts">
-			const searchBox = document.getElementById('search-box') as HTMLInputElement;
-			const postElements = document.querySelectorAll('main ul li');
-
+			// 1. Dynamic Execution Scope Filtering Logic
 			function filterPosts() {
+				const searchBox = document.getElementById('search-box') as HTMLInputElement;
+				const postElements = document.querySelectorAll('main ul li');
+				if (!searchBox || postElements.length === 0) return;
+
 				const query = searchBox.value.toLowerCase().trim();
 
 				postElements.forEach((post) => {
@@ -202,24 +197,38 @@ const posts = postsWithYears.sort((a, b) => {
 				});
 			}
 
-			searchBox?.addEventListener('input', filterPosts);
-
-			// --- TIMING-SAFE URL INTENT PARSING ENGINE ---
+			// 2. Telemetry URL Intent Query Parameter Parser
 			function parseUrlQueryParameters() {
+				const searchBox = document.getElementById('search-box') as HTMLInputElement;
+				if (!searchBox) return;
+
 				const urlParams = new URLSearchParams(window.location.search);
 				const urlQuery = urlParams.get('q');
-				if (urlQuery && searchBox) {
+				
+				if (urlQuery) {
 					searchBox.value = urlQuery;
 					filterPosts();
 				}
 			}
 
-			// If DOM is already settled, fire instantly; otherwise drop onto mount stage
-			if (document.readyState === 'loading') {
-				window.addEventListener('DOMContentLoaded', parseUrlQueryParameters);
-			} else {
-				parseUrlQueryParameters();
+			// 3. Centralized Mount Stage Initialization Engine
+			function initSearchEngine() {
+				const searchBox = document.getElementById('search-box') as HTMLInputElement;
+				if (searchBox) {
+					searchBox.addEventListener('input', filterPosts);
+					parseUrlQueryParameters();
+				}
 			}
+
+			// Execution check handles instant mounts and deferred event hooks uniformly
+			if (document.readyState === 'loading') {
+				window.addEventListener('DOMContentLoaded', initSearchEngine);
+			} else {
+				initSearchEngine();
+			}
+
+			// Optional anchor listener maps to Astro view-transition events if introduced later
+			document.addEventListener('astro:page-load', initSearchEngine);
 		</script>
 	</body>
 </html>
