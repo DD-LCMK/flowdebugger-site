@@ -1,0 +1,62 @@
+name: Scaled Link Checker
+
+on:
+  schedule:
+    # Runs every night at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  link-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Identify Today's Hash Shard
+        id: select-shard
+        run: |
+          FILES=$(node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const blogDir = './src/content/blog';
+            
+            if (!fs.existsSync(blogDir)) {
+              console.log('');
+              process.exit(0);
+            }
+            
+            // Simple string hashing function
+            function getHashBucket(str, buckets) {
+              let hash = 0;
+              for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+              }
+              return Math.abs(hash) % buckets;
+            }
+            
+            const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
+            
+            // Map to 28 consistent daily buckets
+            const totalBuckets = 28;
+            const todayBucket = (new Date().getUTCDate() - 1) % totalBuckets; 
+            
+            const matchingFiles = [];
+            
+            files.forEach(file => {
+              // Bucket the file based strictly on its name
+              if (getHashBucket(file, totalBuckets) === todayBucket) {
+                matchingFiles.push(path.join(blogDir, file));
+              }
+            });
+            
+            console.log(matchingFiles.join(' '));
+          ")
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
+      - name: Test Today's Shard
+        if: steps.select-shard.outputs.files != ''
+        uses: lycheeverse/lychee-action@v1.9.0
+        with:
+          args: --verbose --no-progress ${{ steps.select-shard.outputs.files }}
+          fail: false
