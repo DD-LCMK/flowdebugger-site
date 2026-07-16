@@ -11,6 +11,19 @@ import { SITE_TITLE } from '../consts';
 				<span style="color: #1e293b;" class="logo-text-main">Error</span><span style="color: #ef4444;">Ledger</span>
 			</a>
 		</h2>
+
+		<!-- Global Search Box Component Form -->
+		<form action="/blog" method="GET" class="header-search-form">
+			<input 
+				type="text" 
+				name="q" 
+				class="header-search-input" 
+				placeholder="Search incidents..." 
+				aria-label="Search incidents globally"
+				autocomplete="off"
+			/>
+		</form>
+
 		<div class="internal-links" style="display: flex; align-items: center; gap: 0.25rem;">
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
@@ -120,6 +133,37 @@ import { SITE_TITLE } from '../consts';
 		display: none !important;
 	}
 
+	/* Search input styles */
+	.header-search-form {
+		flex-grow: 1;
+		max-width: 220px;
+		margin: 0 1.5rem;
+	}
+	.header-search-input {
+		width: 100%;
+		padding: 0.45rem 0.75rem;
+		font-size: 0.85rem;
+		border-radius: 6px;
+		border: 1px solid #cbd5e1;
+		background: #f8fafc;
+		color: #1e293b;
+		outline: none;
+		font-family: inherit;
+		transition: all 0.15s ease;
+	}
+	.header-search-input:focus {
+		border-color: #ef4444;
+		background: #ffffff;
+		box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+	}
+
+	/* Hide search on mobile viewports to prevent link collision */
+	@media (max-width: 768px) {
+		.header-search-form {
+			display: none;
+		}
+	}
+
 	/* Telemetry Tracking Line Styles */
 	.progress-bus {
 		position: absolute;
@@ -151,5 +195,14 @@ import { SITE_TITLE } from '../consts';
 	}
 	:global(html.dark) .internal-links a.active {
 		color: #f8fafc;
+	}
+	:global(html.dark) .header-search-input {
+		background: #1e293b;
+		border-color: #334155;
+		color: #f8fafc;
+	}
+	:global(html.dark) .header-search-input:focus {
+		background: #0f172a;
+		border-color: #ef4444;
 	}
 </style>
