@@ -154,7 +154,6 @@ const posts = postsWithYears.sort((a, b) => {
 				<ul>
 					{
 						posts.map((post) => (
-							<!-- Inject the scraped year into the DOM using a data attribute -->
 							<li data-year={post.incidentYear}>
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
 									<!-- Visual 3-Tier Tag List -->
@@ -177,8 +176,8 @@ const posts = postsWithYears.sort((a, b) => {
 		</main>
 		<Footer />
 
-		<!-- Client-Side Filter script -->
-		<script>
+		<!-- Explicitly declare script as TypeScript to support type assertions -->
+		<script lang="ts">
 			const searchBox = document.getElementById('search-box') as HTMLInputElement;
 			const postElements = document.querySelectorAll('main ul li');
 
@@ -193,11 +192,8 @@ const posts = postsWithYears.sort((a, b) => {
 					const titleText = titleElement?.textContent?.toLowerCase() || '';
 					const descText = descElement?.textContent?.toLowerCase() || '';
 					const tagsText = Array.from(tagElements).map(tag => tag.textContent?.toLowerCase() || '').join(' ');
-					
-					// Retrieve the injected data-year attribute
 					const yearText = (post as HTMLElement).dataset.year?.toLowerCase() || '';
 					
-					// Add yearText to the validation check
 					if (titleText.includes(query) || descText.includes(query) || tagsText.includes(query) || yearText.includes(query)) {
 						(post as HTMLElement).style.display = '';
 					} else {
