@@ -2,8 +2,10 @@
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
 
-// Accept layout flag configuration properties
-const { isPost = false } = Astro.props;
+// Automate search bar visibility based on the current URL pathname
+const { pathname } = Astro.url;
+const cleanPath = pathname.replace(/\/$/, "");
+const showSearch = cleanPath.startsWith('/tools') || (cleanPath.startsWith('/blog') && cleanPath !== '/blog');
 ---
 
 <header>
@@ -15,8 +17,8 @@ const { isPost = false } = Astro.props;
 			</a>
 		</h2>
 
-		<!-- Mini search bar only renders when explicitly flags as true inside post layout frames -->
-		{isPost && (
+		<!-- Mini search bar renders automatically on tools pages and individual blog post pages -->
+		{showSearch && (
 			<form action="/blog" method="GET" class="header-search-form">
 				<input 
 					type="text" 
