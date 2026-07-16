@@ -140,7 +140,7 @@ const posts = postsWithYears.sort((a, b) => {
 				<ul>
 					{
 						posts.map((post) => (
-							<li data-year={post.incidentYear}>
+							<li class="post-card" data-year={post.incidentYear}>
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
 									<div class="tag-row">
 										{post.data.tags.map((tag: string) => (
@@ -161,59 +161,81 @@ const posts = postsWithYears.sort((a, b) => {
 		</main>
 		<Footer />
 
-		<script lang="ts">
-			function filterPosts() {
-				const searchBox = document.getElementById('search-box') as HTMLInputElement;
-				const postElements = document.querySelectorAll('main ul li');
-				if (!searchBox) return;
-
-				const query = searchBox.value.toLowerCase().trim();
+		<script>
+			// Pure client-side filtration logic
+			function filterPosts(query) {
+				const postElements = document.querySelectorAll('.post-card');
 
 				postElements.forEach((post) => {
 					const titleText = post.querySelector('.title')?.textContent?.toLowerCase() || '';
 					const descText = post.querySelector('.description')?.textContent?.toLowerCase() || '';
+					
+					// Trim whitespace to prevent tags formatting newline match bugs
 					const tagsText = Array.from(post.querySelectorAll('.card-tag'))
-						.map(tag => tag.textContent?.toLowerCase() || '')
+						.map(tag => tag.textContent?.trim().toLowerCase() || '')
 						.join(' ');
-					const yearText = (post as HTMLElement).dataset.year?.toLowerCase() || '';
+					
+					const yearText = post.dataset.year?.toLowerCase() || '';
 					
 					if (query === '') {
-						(post as HTMLElement).style.display = '';
+						post.style.display = '';
 					} else {
-						if (titleText.includes(query) || descText.includes(query) || tagsText.includes(query) || yearText.includes(query)) {
-							(post as HTMLElement).style.display = '';
-						} else {
-							(post as HTMLElement).style.display = 'none';
-						}
+						const isMatch = titleText.includes(query) || 
+										descText.includes(query) || 
+										tagsText.includes(query) || 
+										yearText.includes(query);
+						post.style.display = isMatch ? '' : 'none';
 					}
 				});
 			}
 
+			// Synchronize global header input & main page input states
 			function initSearchEngine() {
-				const searchBox = document.getElementById('search-box') as HTMLInputElement;
-				if (!searchBox) return;
+				const headerSearch = document.querySelector('.header-search-input');
+				const pageSearch = document.getElementById('search-box');
+				if (!pageSearch) return;
 
+				// 1. Ingest query parameters directly from current browser URL
 				const urlParams = new URLSearchParams(window.location.search);
-				const queryParam = urlParams.get('q');
+				const queryParam = urlParams.get('q') || '';
 				
-				if (queryParam) {
-					searchBox.value = queryParam;
-				} else {
-					searchBox.value = '';
+				// 2. Synchronize search boxes with parameter value
+				if (headerSearch) headerSearch.value = queryParam;
+				pageSearch.value = queryParam;
+
+				// 3. Execute filter immediately
+				filterPosts(queryParam.toLowerCase().trim());
+
+				// 4. Handle input changes dynamically on both nodes
+				function handleInputEvent(e) {
+					const targetValue = e.target.value;
+					
+					if (headerSearch && e.target !== headerSearch) {
+						headerSearch.value = targetValue;
+					}
+					if (pageSearch && e.target !== pageSearch) {
+						pageSearch.value = targetValue;
+					}
+
+					filterPosts(targetValue.toLowerCase().trim());
 				}
 
-				filterPosts();
-
-				searchBox.removeEventListener('input', filterPosts);
-				searchBox.addEventListener('input', filterPosts);
+				if (headerSearch) {
+					headerSearch.removeEventListener('input', handleInputEvent);
+					headerSearch.addEventListener('input', handleInputEvent);
+				}
+				pageSearch.removeEventListener('input', handleInputEvent);
+				pageSearch.addEventListener('input', handleInputEvent);
 			}
 
+			// Render on first load
 			if (document.readyState === 'loading') {
 				window.addEventListener('DOMContentLoaded', initSearchEngine);
 			} else {
 				initSearchEngine();
 			}
 
+			// Render on Astro View Transitions navigation events
 			document.addEventListener('astro:page-load', initSearchEngine);
 		</script>
 	</body>
