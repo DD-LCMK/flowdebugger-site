@@ -171,7 +171,8 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 	</head>
 
 	<body>
-		<Header />
+		<!-- Set context flag parameter to true inside the post layout template framework -->
+		<Header isPost={true} />
 		<main>
 			<div class={showSidebar ? "post-layout-grid has-sidebar" : "post-layout-grid"}>
 				<!-- Main Content Panel -->

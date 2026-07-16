@@ -1,6 +1,9 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
+
+// Accept layout flag configuration properties
+const { isPost = false } = Astro.props;
 ---
 
 <header>
@@ -12,17 +15,19 @@ import { SITE_TITLE } from '../consts';
 			</a>
 		</h2>
 
-		<!-- Global Search Box Component Form -->
-		<form action="/blog" method="GET" class="header-search-form">
-			<input 
-				type="text" 
-				name="q" 
-				class="header-search-input" 
-				placeholder="Search incidents..." 
-				aria-label="Search incidents globally"
-				autocomplete="off"
-			/>
-		</form>
+		<!-- Mini search bar only renders when explicitly flags as true inside post layout frames -->
+		{isPost && (
+			<form action="/blog" method="GET" class="header-search-form">
+				<input 
+					type="text" 
+					name="q" 
+					class="header-search-input" 
+					placeholder="Search incidents..." 
+					aria-label="Search incidents globally"
+					autocomplete="off"
+				/>
+			</form>
+		)}
 
 		<div class="internal-links" style="display: flex; align-items: center; gap: 0.25rem;">
 			<HeaderLink href="/">Home</HeaderLink>
@@ -157,14 +162,12 @@ import { SITE_TITLE } from '../consts';
 		box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
 	}
 
-	/* Hide search on mobile viewports to prevent link collision */
 	@media (max-width: 768px) {
 		.header-search-form {
 			display: none;
 		}
 	}
 
-	/* Telemetry Tracking Line Styles */
 	.progress-bus {
 		position: absolute;
 		bottom: -1px;
@@ -181,21 +184,14 @@ import { SITE_TITLE } from '../consts';
 		transition: width 0.05s ease-out;
 	}
 
-	/* Premium Dark Mode Glass Adjustments */
 	:global(html.dark) header {
 		background: rgba(15, 23, 42, 0.82);
 		border-bottom-color: #1e293b;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 	}
-	:global(html.dark) .logo-text-main {
-		color: #f8fafc !important;
-	}
-	:global(html.dark) .internal-links a {
-		color: #cbd5e1;
-	}
-	:global(html.dark) .internal-links a.active {
-		color: #f8fafc;
-	}
+	:global(html.dark) .logo-text-main { color: #f8fafc !important; }
+	:global(html.dark) .internal-links a { color: #cbd5e1; }
+	:global(html.dark) .internal-links a.active { color: #f8fafc; }
 	:global(html.dark) .header-search-input {
 		background: #1e293b;
 		border-color: #334155;
