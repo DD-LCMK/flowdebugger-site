@@ -9,7 +9,7 @@ import path from 'node:path';
 
 const allPosts = await getCollection('blog');
 
-// 1. Scrape the incident year from the markdown for the client-side filter
+// Scrape the incident year from the markdown for the client-side filter
 const postsWithYears = allPosts.map(post => {
 	let parsedDate = post.data.pubDate ? new Date(post.data.pubDate) : new Date();
 	let incidentYear = '';
@@ -31,7 +31,6 @@ const postsWithYears = allPosts.map(post => {
 		console.error(`Failed to scrape markdown incident date for: ${post.id}`, error);
 	}
 
-	// Fallback to publication year if incident date parsing fails
 	if (!incidentYear) {
 		incidentYear = parsedDate.getUTCFullYear().toString();
 	}
@@ -42,7 +41,6 @@ const postsWithYears = allPosts.map(post => {
 	};
 });
 
-// Guard against missing dates when ordering logs
 const posts = postsWithYears.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
@@ -113,10 +111,7 @@ const posts = postsWithYears.sort((a, b) => {
 			}
 
 			/* Premium Dark Mode Overrides */
-			:global(html.dark) ul li {
-				background: #1e293b;
-				border-color: #334155;
-			}
+			:global(html.dark) ul li { background: #1e293b; border-color: #334155; }
 			:global(html.dark) .title { color: #f8fafc; }
 			:global(html.dark) .description { color: #cbd5e1; }
 			:global(html.dark) #search-box {
@@ -125,24 +120,24 @@ const posts = postsWithYears.sort((a, b) => {
 				color: #f8fafc;
 			}
 			:global(html.dark) #search-box:focus { border-color: #ef4444; }
-			:global(html.dark) .card-tag {
-				background: #334155 !important;
-				color: #cbd5e1 !important;
-			}
+			:global(html.dark) .card-tag { background: #334155 !important; color: #cbd5e1 !important; }
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
 			<section>
-				<!-- Database Search Input Bar -->
 				<div class="search-container">
-					<input 
-						type="text" 
-						id="search-box" 
-						placeholder="Filter incidents by platform, protocol, vector, root cause, year, or status..." 
-						aria-label="Filter incidents"
-					/>
+					<form method="GET" action="/blog">
+						<input 
+							type="text" 
+							name="q"
+							id="search-box" 
+							placeholder="Filter incidents by platform, protocol, vector, root cause, year, or status..." 
+							aria-label="Filter incidents"
+							autocomplete="off"
+						/>
+					</form>
 				</div>
 
 				<ul>
@@ -150,7 +145,6 @@ const posts = postsWithYears.sort((a, b) => {
 						posts.map((post) => (
 							<li data-year={post.incidentYear}>
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
-									<!-- Visual 3-Tier Tag List -->
 									<div class="tag-row">
 										{post.data.tags.map((tag: string) => (
 											<span class="card-tag">
@@ -171,25 +165,23 @@ const posts = postsWithYears.sort((a, b) => {
 		<Footer />
 
 		<script lang="ts">
-			// 1. Dynamic Execution Scope Filtering Logic
 			function filterPosts() {
 				const searchBox = document.getElementById('search-box') as HTMLInputElement;
 				const postElements = document.querySelectorAll('main ul li');
-				if (!searchBox || postElements.length === 0) return;
+				if (!searchBox) return;
 
 				const query = searchBox.value.toLowerCase().trim();
 
 				postElements.forEach((post) => {
-					const titleElement = post.querySelector('.title');
-					const descElement = post.querySelector('.description');
-					const tagElements = post.querySelectorAll('.card-tag');
-					
-					const titleText = titleElement?.textContent?.toLowerCase() || '';
-					const descText = descElement?.textContent?.toLowerCase() || '';
-					const tagsText = Array.from(tagElements).map(tag => tag.textContent?.toLowerCase() || '').join(' ');
+					const titleText = post.querySelector('.title')?.textContent?.toLowerCase() || '';
+					const descText = post.querySelector('.description')?.textContent?.toLowerCase() || '';
+					const tagsText = Array.from(post.querySelectorAll('.card-tag'))
+						.map(tag => tag.textContent?.toLowerCase() || '')
+						.join(' ');
 					const yearText = (post as HTMLElement).dataset.year?.toLowerCase() || '';
 					
-					if (titleText.includes(query) || descText.includes(query) || tagsText.includes(query) || yearText.includes(query)) {
+					// If the search string matches absolutely nothing, display is set to none
+					if (query === '' || titleText.includes(query) || descText.includes(query) || tagsText.includes(query) || yearText.includes(query)) {
 						(post as HTMLElement).style.display = '';
 					} else {
 						(post as HTMLElement).style.display = 'none';
@@ -197,38 +189,29 @@ const posts = postsWithYears.sort((a, b) => {
 				});
 			}
 
-			// 2. Telemetry URL Intent Query Parameter Parser
-			function parseUrlQueryParameters() {
+			function initSearchEngine() {
 				const searchBox = document.getElementById('search-box') as HTMLInputElement;
 				if (!searchBox) return;
 
+				// Parse parameters directly out of the live browser window context
 				const urlParams = new URLSearchParams(window.location.search);
-				const urlQuery = urlParams.get('q');
+				const queryParam = urlParams.get('q');
 				
-				if (urlQuery) {
-					searchBox.value = urlQuery;
-					filterPosts();
+				if (queryParam) {
+					searchBox.value = queryParam;
 				}
+
+				// Run the filtering logic immediately using the parsed parameter values
+				filterPosts();
+
+				searchBox.addEventListener('input', filterPosts);
 			}
 
-			// 3. Centralized Mount Stage Initialization Engine
-			function initSearchEngine() {
-				const searchBox = document.getElementById('search-box') as HTMLInputElement;
-				if (searchBox) {
-					searchBox.addEventListener('input', filterPosts);
-					parseUrlQueryParameters();
-				}
-			}
-
-			// Execution check handles instant mounts and deferred event hooks uniformly
 			if (document.readyState === 'loading') {
 				window.addEventListener('DOMContentLoaded', initSearchEngine);
 			} else {
 				initSearchEngine();
 			}
-
-			// Optional anchor listener maps to Astro view-transition events if introduced later
-			document.addEventListener('astro:page-load', initSearchEngine);
 		</script>
 	</body>
 </html>
