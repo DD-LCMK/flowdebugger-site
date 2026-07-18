@@ -130,4 +130,26 @@ const blog = defineCollection({
 	}),
 });
 
-export const collections = { blog };
+// FIX: Define the insights collection with matching data properties
+const insights = defineCollection({
+	loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/insights" }),
+	schema: z.object({
+		title: z.string(),
+		meta_title: z.string().optional(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		tags: z.array(z.string()).optional(),
+		slug: z.string().optional(),
+	}).transform((data) => {
+		const baseSlug = data.slug || data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+		const finalSlug = baseSlug.split('-').slice(0, 6).join('-');
+		return {
+			...data,
+			shortenedSlug: finalSlug,
+			tags: data.tags && data.tags.length > 0 ? data.tags : ["Insights"]
+		};
+	}),
+});
+
+// FIX: Export both collections so Astro registers the tracks
+export const collections = { blog, insights };
