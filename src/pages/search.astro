@@ -1,0 +1,113 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+
+const blogPosts = await getCollection('blog');
+const insightPosts = await getCollection('insights');
+const allPosts = [...blogPosts, ...insightPosts];
+
+const postsWithYears = allPosts.map(post => {
+	let parsedDate = post.data.pubDate ? new Date(post.data.pubDate) : new Date();
+	let itemYear = '';
+	try {
+		const fileContent = post.body || '';
+		if (fileContent) {
+			const tableMatch = fileContent.match(/\|\s*\*?\*?Date\*?\*?\s*\|\s*([^|]+)\|/i);
+			const textMatch = fileContent.match(/(?:^|\n|#|-|\*)\s*\*?\*?Date\*?\s*:\s*([^#\n\r|*]+)/i);
+			const rawDateString = tableMatch ? tableMatch[1] : (textMatch ? textMatch[1] : null);
+			if (rawDateString) {
+				const cleanDateStr = rawDateString.replace(/[\*\_]/g, '').trim();
+				const cleanParsedDate = new Date(cleanDateStr);
+				if (!isNaN(cleanParsedDate.getTime())) itemYear = cleanParsedDate.getUTCFullYear().toString();
+			}
+		}
+	} catch (e) {
+		console.error(e);
+	}
+	if (!itemYear) itemYear = parsedDate.getUTCFullYear().toString();
+	return { ...post, itemYear };
+});
+
+const posts = postsWithYears.sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={`Search | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 3em 1rem; }
+			ul { display: flex; flex-direction: column; gap: 1.5rem; list-style-type: none; margin: 0; padding: 0; }
+			ul li { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; }
+			.title { margin: 0 0 0.5rem 0; font-size: 1.35rem; color: #1a202c; }
+			ul li a { text-decoration: none; }
+			.description { margin: 0; color: #4a5568; font-size: 0.95rem; }
+			.search-container { margin-bottom: 2rem; width: 100%; }
+			#search-box { width: 100%; padding: 0.75rem 1rem; font-size: 1rem; border-radius: 6px; border: 1px solid #cbd5e1; }
+			.tag-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; align-items: center; }
+			.card-tag { font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; }
+			.type-badge { font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; }
+			.type-incident { background: #fee2e2; color: #ef4444; }
+			.type-insight { background: #dbeafe; color: #3b82f6; }
+			:global(html.dark) ul li { background: #1e293b; border-color: #334155; }
+			:global(html.dark) .title { color: #f8fafc; }
+			:global(html.dark) .description { color: #cbd5e1; }
+			:global(html.dark) #search-box { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+			:global(html.dark) .card-tag { background: #334155 !important; color: #cbd5e1 !important; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="search-container">
+				<input type="text" id="search-box" placeholder="Search everything..." autocomplete="off" />
+			</div>
+			<ul>
+				{posts.map((post) => (
+					<li class="post-card" data-year={post.itemYear}>
+						<a href={`/${post.collection}/${post.data.shortenedSlug}/`}>
+							<div class="tag-row">
+								<span class={`type-badge ${post.collection === 'blog' ? 'type-incident' : 'type-insight'}`}>
+									{post.collection === 'blog' ? 'Incident' : 'Insight'}
+								</span>
+								{post.data.tags.map((tag: string) => <span class="card-tag">{tag}</span>)}
+							</div>
+							<h4 class="title">{post.data.title}</h4>
+							<p class="description">{post.data.description}</p>
+						</a>
+					</li>
+				))}
+			</ul>
+		</main>
+		<Footer />
+		<script>
+			function filterPosts(query) {
+				document.querySelectorAll('.post-card').forEach((post: any) => {
+					const text = (post.textContent + ' ' + (post.dataset.year || '')).toLowerCase();
+					post.style.display = text.includes(query) ? '' : 'none';
+				});
+			}
+			function init() {
+				const pageSearch: any = document.getElementById('search-box');
+				const headerSearch: any = document.querySelector('.header-search-input');
+				const query = new URLSearchParams(window.location.search).get('q') || '';
+				
+				if (pageSearch) pageSearch.value = query;
+				if (headerSearch) headerSearch.value = query;
+				filterPosts(query.toLowerCase().trim());
+
+				const handler = (e: any) => {
+					if (headerSearch && e.target !== headerSearch) headerSearch.value = e.target.value;
+					if (pageSearch && e.target !== pageSearch) pageSearch.value = e.target.value;
+					filterPosts(e.target.value.toLowerCase().trim());
+				};
+				pageSearch?.addEventListener('input', handler);
+				headerSearch?.addEventListener('input', handler);
+			}
+			init();
+			document.addEventListener('astro:page-load', init);
+		</script>
+	</body>
+</html>

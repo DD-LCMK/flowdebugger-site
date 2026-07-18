@@ -12,14 +12,14 @@ import { SITE_TITLE } from '../consts';
 			</a>
 		</h2>
 
-		<!-- Search utility is now global and renders unconditionally on all viewpoints -->
-		<form action="/blog" method="GET" class="header-search-form">
+		<!-- FIX: Changed action to /search to query all collections globally -->
+		<form action="/search" method="GET" class="header-search-form">
 			<input 
 				type="text" 
 				name="q" 
 				class="header-search-input" 
-				placeholder="Search incidents..." 
-				aria-label="Search incidents globally"
+				placeholder="Search all topics..." 
+				aria-label="Search repository globally"
 				autocomplete="off"
 			/>
 		</form>

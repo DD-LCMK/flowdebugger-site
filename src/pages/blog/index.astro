@@ -7,42 +7,7 @@ import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
 
-// Scrape the incident year directly from the markdown body text
-const postsWithYears = allPosts.map(post => {
-	let parsedDate = post.data.pubDate ? new Date(post.data.pubDate) : new Date();
-	let incidentYear = '';
-	
-	try {
-		const fileContent = post.body || '';
-		if (fileContent) {
-			// Fixed: Removed literal backslash typos to properly parse table rows
-			const tableMatch = fileContent.match(/\|\s*\*?\*?Date\*?\*?\s*\|\s*([^|]+)\|/i);
-			const textMatch = fileContent.match(/(?:^|\n|#|-|\*)\s*\*?\*?Date\*?\*?\s*:\s*([^#\n\r|*]+)/i);
-			const rawDateString = tableMatch ? tableMatch[1] : (textMatch ? textMatch[1] : null);
-			
-			if (rawDateString) {
-				const cleanDateStr = rawDateString.replace(/[\*\_]/g, '').trim();
-				const cleanParsedDate = new Date(cleanDateStr);
-				if (!isNaN(cleanParsedDate.getTime())) {
-					incidentYear = cleanParsedDate.getUTCFullYear().toString();
-				}
-			}
-		}
-	} catch (error) {
-		console.error(`Failed to scrape markdown incident date for: ${post.id}`, error);
-	}
-
-	if (!incidentYear) {
-		incidentYear = parsedDate.getUTCFullYear().toString();
-	}
-
-	return {
-		...post,
-		incidentYear
-	};
-});
-
-const posts = postsWithYears.sort((a, b) => {
+const posts = allPosts.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
 	return dateB - dateA;
@@ -51,7 +16,7 @@ const posts = postsWithYears.sort((a, b) => {
 
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Incidents | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 3em 1rem; }
 			ul { display: flex; flex-direction: column; gap: 1.5rem; list-style-type: none; margin: 0; padding: 0; }
@@ -71,26 +36,6 @@ const posts = postsWithYears.sort((a, b) => {
 			ul li a { text-decoration: none; }
 			ul li a:hover .title { color: #ef4444; }
 			.description { margin: 0 0 1rem 0; color: #4a5568; font-size: 0.95rem; line-height: 1.5; }
-
-			.search-container {
-				margin-bottom: 2rem;
-				width: 100%;
-			}
-			#search-box {
-				width: 100%;
-				padding: 0.75rem 1rem;
-				font-size: 1rem;
-				border-radius: 6px;
-				border: 1px solid #cbd5e1;
-				background-color: #ffffff;
-				color: #1e293b;
-				outline: none;
-				font-family: inherit;
-				transition: border-color 0.15s ease;
-			}
-			#search-box:focus {
-				border-color: #ef4444;
-			}
 
 			.tag-row {
 				display: flex;
@@ -112,12 +57,6 @@ const posts = postsWithYears.sort((a, b) => {
 			:global(html.dark) ul li { background: #1e293b; border-color: #334155; }
 			:global(html.dark) .title { color: #f8fafc; }
 			:global(html.dark) .description { color: #cbd5e1; }
-			:global(html.dark) #search-box {
-				background-color: #1e293b;
-				border-color: #334155;
-				color: #f8fafc;
-			}
-			:global(html.dark) #search-box:focus { border-color: #ef4444; }
 			:global(html.dark) .card-tag { background: #334155 !important; color: #cbd5e1 !important; }
 		</style>
 	</head>
@@ -125,23 +64,10 @@ const posts = postsWithYears.sort((a, b) => {
 		<Header />
 		<main>
 			<section>
-				<div class="search-container">
-					<form method="GET" action="/blog">
-						<input 
-							type="text" 
-							name="q"
-							id="search-box" 
-							placeholder="Filter incidents by platform, protocol, vector, or root cause..." 
-							aria-label="Filter incidents"
-							autocomplete="off"
-						/>
-					</form>
-				</div>
-
 				<ul>
 					{
 						posts.map((post) => (
-							<li class="post-card" data-year={post.incidentYear}>
+							<li class="post-card">
 								<a href={`/blog/${post.data.shortenedSlug}/`}>
 									<div class="tag-row">
 										{post.data.tags.map((tag: string) => (
@@ -161,83 +87,5 @@ const posts = postsWithYears.sort((a, b) => {
 			</section>
 		</main>
 		<Footer />
-
-		<script>
-			// Pure client-side filtration logic
-			function filterPosts(query) {
-				const postElements = document.querySelectorAll('.post-card');
-
-				postElements.forEach((post) => {
-					const titleText = post.querySelector('.title')?.textContent?.toLowerCase() || '';
-					const descText = post.querySelector('.description')?.textContent?.toLowerCase() || '';
-					
-					// Trim whitespace to prevent tags formatting newline match bugs
-					const tagsText = Array.from(post.querySelectorAll('.card-tag'))
-						.map(tag => tag.textContent?.trim().toLowerCase() || '')
-						.join(' ');
-					
-					const yearText = post.dataset.year?.toLowerCase() || '';
-					
-					if (query === '') {
-						post.style.display = '';
-					} else {
-						const isMatch = titleText.includes(query) || 
-										descText.includes(query) || 
-										tagsText.includes(query) || 
-										yearText.includes(query);
-						post.style.display = isMatch ? '' : 'none';
-					}
-				});
-			}
-
-			// Synchronize global header input & main page input states
-			function initSearchEngine() {
-				const headerSearch = document.querySelector('.header-search-input');
-				const pageSearch = document.getElementById('search-box');
-				if (!pageSearch) return;
-
-				// 1. Ingest query parameters directly from current browser URL
-				const urlParams = new URLSearchParams(window.location.search);
-				const queryParam = urlParams.get('q') || '';
-				
-				// 2. Synchronize search boxes with parameter value
-				if (headerSearch) headerSearch.value = queryParam;
-				pageSearch.value = queryParam;
-
-				// 3. Execute filter immediately
-				filterPosts(queryParam.toLowerCase().trim());
-
-				// 4. Handle input changes dynamically on both nodes
-				function handleInputEvent(e) {
-					const targetValue = e.target.value;
-					
-					if (headerSearch && e.target !== headerSearch) {
-						headerSearch.value = targetValue;
-					}
-					if (pageSearch && e.target !== pageSearch) {
-						pageSearch.value = targetValue;
-					}
-
-					filterPosts(targetValue.toLowerCase().trim());
-				}
-
-				if (headerSearch) {
-					headerSearch.removeEventListener('input', handleInputEvent);
-					headerSearch.addEventListener('input', handleInputEvent);
-				}
-				pageSearch.removeEventListener('input', handleInputEvent);
-				pageSearch.addEventListener('input', handleInputEvent);
-			}
-
-			// Render on first load
-			if (document.readyState === 'loading') {
-				window.addEventListener('DOMContentLoaded', initSearchEngine);
-			} else {
-				initSearchEngine();
-			}
-
-			// Render on Astro View Transitions navigation events
-			document.addEventListener('astro:page-load', initSearchEngine);
-		</script>
 	</body>
 </html>

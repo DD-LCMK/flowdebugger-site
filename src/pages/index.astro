@@ -50,7 +50,7 @@ allPosts.forEach(post => {
 		const fileContent = post.body || '';
 		if (fileContent) {
 			const tableMatch = fileContent.match(/\|\s*\*?\*?Date\*?\*?\s*\|\s*([^|]+)\|/i);
-			const textMatch = fileContent.match(/(?:^|\n|#|-|\*)\s*\*?\*?Date\*?\*?\s*:\s*([^#\n\r|*]+)/i);
+			const textMatch = fileContent.match(/(?:^|\n|#|-|\*)\s*\*?\*?Date\*?\s*:\s*([^#\n\r|*]+)/i);
 			const rawDateString = tableMatch ? tableMatch[1] : (textMatch ? textMatch[1] : null);
 			
 			if (rawDateString) {
@@ -295,7 +295,8 @@ const recentPosts = posts.slice(0, 3);
 				<h1>Welcome to <span>ErrorLedger</span></h1>
 				<p>An independent, evergreen post-mortem analysis library documenting significant cloud infrastructure outages, cybersecurity breaches, and deep architectural failures.</p>
 				
-				<form action="/blog" method="GET" class="search-form">
+				<!-- FIX: Changed action to /search to hit unified query index page -->
+				<form action="/search" method="GET" class="search-form">
 					<input 
 						type="text" 
 						name="q" 
@@ -307,7 +308,7 @@ const recentPosts = posts.slice(0, 3);
 
 				<div class="badge-container">
 					{topTags.map((tag) => (
-						<a href={`/blog?q=${tag.toLowerCase()}`} class="badge">#{tag}</a>
+						<a href={`/search?q=${tag.toLowerCase()}`} class="badge">#{tag}</a>
 					))}
 				</div>
 			</section>
@@ -341,7 +342,7 @@ const recentPosts = posts.slice(0, 3);
 					<div class="timeline-track">
 						{
 							timelineYears.map((node) => (
-								<a href={`/blog?q=${node.year}`} class="timeline-node-link">
+								<a href={`/search?q=${node.year}`} class="timeline-node-link">
 									<span class="timeline-year-label">{node.year}</span>
 									<div class="timeline-pulse-dot"></div>
 									<span class="timeline-count-badge">
