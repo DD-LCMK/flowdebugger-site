@@ -6,6 +6,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
+const allInsights = await getCollection('insights');
 
 // 1. Count occurrences of each tag dynamically across active incidents
 const tagCounts: Record<string, number> = {};
@@ -29,6 +30,15 @@ const posts = allPosts.sort((a, b) => {
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
 	return dateB - dateA;
 });
+
+// Sort and capture the 3 latest technical insights posts
+const recentInsights = allInsights
+	.sort((a, b) => {
+		const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
+		const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
+		return dateB - dateA;
+	})
+	.slice(0, 3);
 
 // 3. Serverless-Safe Scraping Engine: Parse incident dates using pure Astro metadata body strings
 const annualMetrics: Record<number, number> = {};
@@ -341,6 +351,35 @@ const recentPosts = posts.slice(0, 3);
 							))
 						}
 					</div>
+				</div>
+			</section>
+
+			<!-- New Technical & Software Economics Insights Section -->
+			<section style="margin-bottom: 3.5rem;">
+				<h3 class="feed-title">Latest Technical Insights</h3>
+				<ul>
+					{
+						recentInsights.map((post) => (
+							<li>
+								<a href={`/insights/${post.data.shortenedSlug}/`}>
+									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+										{post.data.tags.map((tag: string) => (
+											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #ef4444; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
+												{tag}
+											</span>
+										))}
+									</div>
+									
+									<h4 class="title">{post.data.title}</h4>
+									<p class="description">{post.data.description}</p>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+				
+				<div class="view-all-container">
+					<a href="/insights" class="view-all-btn">View All Insights Essays →</a>
 				</div>
 			</section>
 
