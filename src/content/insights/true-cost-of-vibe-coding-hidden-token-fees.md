@@ -93,6 +93,7 @@ The operational pattern of modern generative coding closely mirrors the structur
 
 The sustainable solution to this economic model is a balanced, hybrid architecture that combines local hardware optimization with targeted cloud execution.
 
+```
 +-------------------------------------------------------------+
 |                HYBRID DEVELOPMENT WORKSPACE                 |
 |  Zero Marginal Cost Iteration + Targeted Cloud Validation  |
@@ -112,6 +113,7 @@ The sustainable solution to this economic model is a balanced, hybrid architectu
 |   |  Final Validation |              | Expanded RAM     |   |
 |   +-------------------+              +------------------+   |
 +-------------------------------------------------------------+
+```
 
 While cloud-hosted frontier models remain highly effective for complex architectural decisions, final system integrations, and high-level logic verification, local inference eliminates marginal token costs for rapid prototyping, syntax checks, and localized linting loops. 
 
