@@ -218,11 +218,11 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 						<slot />
 					</div>
 				</article>
+
 				<!-- Simplified Mini Navigation Sidebar Card -->
 				{showSidebar && (
 					<aside class="sidebar-wrapper">
 						{nextPost && (
-							<!-- Removed trailing slash -->
 							<a href={`/blog/${nextPost.data.shortenedSlug}`} class="nav-node-link">
 								<span class="nav-node-label">← Next Record</span>
 								<span class="nav-node-title">{nextPost.data.title}</span>
@@ -230,7 +230,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 						)}
 						
 						{prevPost && (
-							<!-- Removed trailing slash -->
 							<a href={`/blog/${prevPost.data.shortenedSlug}`} class="nav-node-link">
 								<span class="nav-node-label">Previous Record →</span>
 								<span class="nav-node-title">{prevPost.data.title}</span>
