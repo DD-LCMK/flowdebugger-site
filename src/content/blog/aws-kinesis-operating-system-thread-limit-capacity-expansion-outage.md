@@ -172,9 +172,9 @@ In its official Post-Event Summary, AWS outlined several architectural commitmen
 ---
 
 ### Related Incidents
-* **[Rogers Communications Routing Table Overload (2022)](/blog/rogers-routing-table-overload-outage-2022)** — A routine maintenance update removed access filters, flooding network nodes with routing table entries and breaching hardware memory limits.
-* **[Cloudflare Edge Parser Buffer Overflow](/blog/cloudflare-html-edge-parser-buffer-overflow)** — A single-character pointer check error in an edge parser exposed uninitialized memory across shared multi-tenant proxy servers.
-* **[Facebook DNS BGP Prefix Route Withdrawal](/blog/facebook-dns-bgp-prefix-route-withdrawal)** — An auditing bug allowed a faulty configuration command to sever backbone connectivity and lock out administrative tools.
+* **[Rogers Communications Routing Table Overload (2022)](https://errorledger.com/blog/rogers-routing-table-overload-outage-2022)** — A routine maintenance update removed access filters, flooding network nodes with routing table entries and breaching hardware memory limits.
+* **[Cloudflare Edge Parser Buffer Overflow](https://errorledger.com/blog/cloudflare-html-edge-parser-buffer-overflow)** — A single-character pointer check error in an edge parser exposed uninitialized memory across shared multi-tenant proxy servers.
+* **[Facebook DNS BGP Prefix Route Withdrawal](https://errorledger.com/blog/facebook-dns-bgp-prefix-route-withdrawal)** — An auditing bug allowed a faulty configuration command to sever backbone connectivity and lock out administrative tools.
 
 ---
 
