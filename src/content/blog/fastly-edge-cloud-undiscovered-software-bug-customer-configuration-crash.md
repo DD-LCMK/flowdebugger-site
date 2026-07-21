@@ -1,5 +1,6 @@
 ---
 pipeline_contract_version: "22.0.2"
+title: "Fastly June 2021 Outage: How a Latent Software Bug Crashed Edge Nodes Worldwide"
 pubDate: "2021-06-08"
 keyword: "Fastly Edge Cloud Undiscovered Software Bug Customer Configuration Crash"
 slug: "fastly-edge-cloud-undiscovered-software-bug-customer-configuration-crash"
@@ -10,19 +11,6 @@ article_confidence: "★★★★★"
 canonical_terminology:
   approved: ["Fastly", "Varnish", "CDN Edge Node", "Configuration Change", "Service Crash"]
 ---
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "Fastly June 2021 Outage: How a Latent Software Bug Crashed Edge Nodes Worldwide",
-  "datePublished": "2021-06-08",
-  "author": {
-    "@type": "Organization",
-    "name": "ErrorLedger"
-  }
-}
-</script>
 
 # Fastly June 2021 Outage: How a Latent Software Bug Crashed Edge Nodes Worldwide [Status: RESOLVED]
 
@@ -98,3 +86,16 @@ To insulate production lines from systemic configuration failures, infrastructur
 
 *   **Systems Engineering & SRE Post-Mortems**
     *   [SRE Weekly: Comprehensive Post-Mortem Analysis of Configuration Propagation Blasts](https://sreweekly.com)
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Fastly June 2021 Outage: How a Latent Software Bug Crashed Edge Nodes Worldwide",
+  "datePublished": "2021-06-08",
+  "author": {
+    "@type": "Organization",
+    "name": "ErrorLedger"
+  }
+}
+</script>

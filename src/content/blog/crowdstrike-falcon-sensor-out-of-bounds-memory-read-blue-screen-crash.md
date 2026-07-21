@@ -1,5 +1,6 @@
 ---
 pipeline_contract_version: "22.0.2"
+title: "CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash"
 pubDate: "2024-07-19"
 keyword: "CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash"
 slug: "crowdstrike-falcon-sensor-out-of-bounds-memory-read-blue-screen-crash"
@@ -10,19 +11,6 @@ article_confidence: "★★★★★"
 canonical_terminology:
   approved: ["CrowdStrike", "Falcon Sensor", "Channel File 291", "Out-of-Bounds Memory Read", "Blue Screen of Death (BSOD)"]
 ---
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash",
-  "datePublished": "2024-07-19",
-  "author": {
-    "@type": "Organization",
-    "name": "ErrorLedger"
-  }
-}
-</script>
 
 # CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash [Status: RESOLVED]
 
@@ -89,3 +77,16 @@ This incident parallels historical flaws in high-velocity automated systems—su
 
 *   **Ecosystem Impact Reports**
     *   [Wikipedia: 2024 CrowdStrike Incident Global Impact Summary](https://en.wikipedia.org/wiki/2024_CrowdStrike_incident)
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash",
+  "datePublished": "2024-07-19",
+  "author": {
+    "@type": "Organization",
+    "name": "ErrorLedger"
+  }
+}
+</script>
