@@ -7,6 +7,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://errorledger.com',
+	// Enforces non-trailing slashes across all generated routes, redirects, and sitemaps
+	trailingSlash: 'never',
 	// Forces Astro to output flat files (like 404.html) instead of folders
 	build: {
 		format: 'file',

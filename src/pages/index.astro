@@ -295,7 +295,6 @@ const recentPosts = posts.slice(0, 3);
 				<h1>Welcome to <span>ErrorLedger</span></h1>
 				<p>An independent, evergreen post-mortem analysis library documenting significant cloud infrastructure outages, cybersecurity breaches, and deep architectural failures.</p>
 				
-				<!-- FIX: Changed action to /search to hit unified query index page -->
 				<form action="/search" method="GET" class="search-form">
 					<input 
 						type="text" 
@@ -355,14 +354,15 @@ const recentPosts = posts.slice(0, 3);
 				</div>
 			</section>
 
-			<!-- New Technical & Software Economics Insights Section -->
+			<!-- Technical & Software Economics Insights Section -->
 			<section style="margin-bottom: 3.5rem;">
 				<h3 class="feed-title">Latest Technical Insights</h3>
 				<ul>
 					{
 						recentInsights.map((post) => (
 							<li>
-								<a href={`/insights/${post.data.shortenedSlug}/`}>
+								<!-- REMOVED TRAILING SLASH TO MATCH SITEMAP EXACTLY -->
+								<a href={`/insights/${post.data.shortenedSlug}`}>
 									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
 										{post.data.tags.map((tag: string) => (
 											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #ef4444; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
@@ -390,7 +390,8 @@ const recentPosts = posts.slice(0, 3);
 					{
 						recentPosts.map((post) => (
 							<li>
-								<a href={`/blog/${post.data.shortenedSlug}/`}>
+								<!-- REMOVED TRAILING SLASH TO MATCH SITEMAP EXACTLY -->
+								<a href={`/blog/${post.data.shortenedSlug}`}>
 									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
 										{post.data.tags.map((tag: string) => (
 											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">

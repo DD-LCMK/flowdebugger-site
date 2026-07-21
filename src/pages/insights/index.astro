@@ -68,7 +68,8 @@ const posts = allPosts.sort((a, b) => {
 					{
 						posts.map((post) => (
 							<li class="post-card">
-								<a href={`/insights/${post.data.shortenedSlug}/`}>
+								<!-- Removed trailing slash -->
+								<a href={`/insights/${post.data.shortenedSlug}`}>
 									<div class="tag-row">
 										{post.data.tags.map((tag: string) => (
 											<span class="card-tag">

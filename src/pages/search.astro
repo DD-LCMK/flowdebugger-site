@@ -67,7 +67,8 @@ const posts = postsWithYears.sort((a, b) => new Date(b.data.pubDate).valueOf() -
 			<ul>
 				{posts.map((post) => (
 					<li class="post-card" data-year={post.itemYear}>
-						<a href={`/${post.collection}/${post.data.shortenedSlug}/`}>
+						<!-- Removed trailing slash -->
+						<a href={`/${post.collection}/${post.data.shortenedSlug}`}>
 							<div class="tag-row">
 								<span class={`type-badge ${post.collection === 'blog' ? 'type-incident' : 'type-insight'}`}>
 									{post.collection === 'blog' ? 'Incident' : 'Insight'}
