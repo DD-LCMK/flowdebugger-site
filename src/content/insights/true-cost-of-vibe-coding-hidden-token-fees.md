@@ -2,9 +2,10 @@
 title: "The Economics of Vibe Coding: Understanding Context Windows, Token Costs, and Hybrid Development"
 meta_title: "The Economics of Vibe Coding: Context Windows and Token Costs"
 description: "An analytical examination of how context windows, token consumption, and API pricing influence the economics of AI-assisted software development."
-pubDate: 2026-07-19
+pubDate: "2026-07-19"
 tags: ["vibe-coding", "ai-development", "token-economics", "software-costs", "local-llms"]
 slug: "true-cost-of-vibe-coding-hidden-token-fees"
+shortenedSlug: "true-cost-of-vibe-coding-hidden-token-fees"
 ---
 
 # The Economics of Vibe Coding: Understanding Context Windows, Token Costs, and Hybrid Development [Status: ANALYZED]
@@ -125,21 +126,3 @@ Depending on model size, local inference may require substantial system RAM or G
 *   [OpenAI API Core Capabilities and Token Cost Matrix](https://openai.com/api/pricing/)
 *   [SWE-Bench Verified: LLM Agentic Coding Performance Metrics](https://www.swebench.com/)
 *   [Ollama Open-Source Local Context Orchestration Repository](https://github.com/ollama/ollama)
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "The Economics of Vibe Coding: Understanding Context Windows, Token Costs, and Hybrid Development",
-  "description": "An analytical examination of how context windows, token consumption, and API pricing influence the economics of AI-assisted software development.",
-  "datePublished": "2026-07-19",
-  "author": {
-    "@type": "Organization",
-    "name": "ErrorLedger"
-  },
-  "about": {
-    "@type": "Thing",
-    "name": "software-economics"
-  }
-}
-</script>

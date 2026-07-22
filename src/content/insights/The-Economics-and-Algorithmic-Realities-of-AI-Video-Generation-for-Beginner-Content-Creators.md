@@ -2,9 +2,10 @@
 title: "The One-Shot Video Illusion: The True Asset Pipelines and Labor Costs of Automated Content"
 meta_title: "The Production Economics of AI Video Generation 2026"
 description: "An operational feasibility study analyzing the hidden labor pipelines, algorithmic satisfaction models, and software economics of automated digital media production."
-pubDate: 2026-07-19
+pubDate: "2026-07-19"
 tags: ["ai-video", "creator-economics", "asset-pipeline", "audience-retention", "software-economics"]
 slug: "the-one-shot-video-illusion-automated-content-labor-economics"
+shortenedSlug: "the-one-shot-video-illusion-automated-content-labor-economics"
 ---
 
 # The One-Shot Video Illusion: The True Asset Pipelines and Labor Costs of Automated Content [Status: ACTIVE ANALYSIS]
@@ -381,27 +382,3 @@ By running these local configurations, creators can automate technical tasks for
     *   [37] Daily.dev: [Running LLMs Locally in 2026: Ollama, llama.cpp, and Self-Hosted AI for Developers](https://daily.dev/blog/running-llms-locally-ollama-llama-cpp-self-hosted-ai-developers/)
     *   [38] WebCraft: [Top 10 Ollama Models 2026: Llama, Qwen, DeepSeek, Mistral](https://webscraft.org/blog/ollama-na-8-gb-ram-yaki-modeli-pratsyuyut-u-2026?lang=en)
     *   [39] Local AI Master: [Ollama VRAM Requirements 2026: Table for Every Model (1B-405B)](https://localaimaster.com)
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "The One-Shot Video Illusion: The True Asset Pipelines and Labor Costs of Automated Content",
-  "description": "An operational feasibility study analyzing the hidden labor pipelines, algorithmic satisfaction models, and software economics of automated digital media production.",
-  "datePublished": "2026-07-19",
-  "author": {
-    "@type": "Organization",
-    "name": "ErrorLedger"
-  },
-  "about": [
-    {
-      "@type": "Thing",
-      "name": "ai-video"
-    },
-    {
-      "@type": "Thing",
-      "name": "creator-economics"
-    }
-  ]
-}
-</script>
