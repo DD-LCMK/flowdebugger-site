@@ -21,7 +21,7 @@ html {
 	min-height: 100%;
 }
 
-/* Subtle Blueprint Grid Canvas Background */
+/* --- LIGHT MODE CANVAS: Crisp Dot Grid --- */
 body {
   font-family: var(--font-atkinson);
   margin: 0;
@@ -34,17 +34,18 @@ body {
   line-height: 1.7;
   min-height: 100vh;
 
-  /* Enhanced Visible Dot Grid Canvas (Light Mode) */
   background-color: #f8fafc !important;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1.2px, transparent 1.2px) !important;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.16) 1.5px, transparent 1.5px) !important;
   background-size: 24px 24px !important;
 }
 
-/* Dark Mode Grid Canvas Adaptation (High Contrast Dot Fix) */
+/* --- DARK MODE CANVAS: High-Visibility Engineering Blueprint Grid --- */
 html.dark body {
   background-color: #090d16 !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.22) 1.4px, transparent 1.4px) !important;
-  background-size: 24px 24px !important;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) !important;
+  background-size: 32px 32px !important;
   color: #cbd5e1 !important;
 }
 
