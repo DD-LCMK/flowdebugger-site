@@ -3,7 +3,7 @@ pipeline_contract_version: "27.0.0"
 title: "CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash"
 meta_title: "CrowdStrike Falcon BSOD Outage Technical RCA"
 description: "Technical post-mortem of the CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash affecting 8.5 million Windows hosts."
-pubDate: "2026-07-222"
+pubDate: "2026-07-22"
 tags: ["operating-system", "crowdstrike", "windows-kernel", "out-of-bounds-read", "bsod-boot-loop"]
 shortenedSlug: "crowdstrike-falcon-sensor-out-of-bounds-memory-read-blue-screen-crash"
 keyword: "CrowdStrike Falcon Sensor Out-of-Bounds Memory Read Blue Screen Crash"
