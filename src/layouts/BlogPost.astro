@@ -184,7 +184,8 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 			.share-btn:hover { background: #f8fafc; border-color: #94a3b8; color: #0f172a; }
 
 			.tag-container { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
-			.tag-badge { font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em; }
+			.tag-badge { font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em; text-decoration: none; }
+			.tag-badge:hover { background: #ef4444; color: #ffffff; }
 
 			/* --- STRICT DARK MODE SYSTEM OVERRIDES --- */
 			:global(html.dark) .prose { color: #cbd5e1; }
@@ -193,6 +194,7 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 			:global(html.dark) .prose :global(td) { border-bottom-color: #334155; }
 			:global(html.dark) .meta-wrapper { border-bottom-color: #334155; }
 			:global(html.dark) .tag-badge { background: #334155; color: #cbd5e1; }
+			:global(html.dark) .tag-badge:hover { background: #ef4444; color: #ffffff; }
 			:global(html.dark) .share-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
 			:global(html.dark) .share-btn:hover { background: #273549; border-color: #475569; color: #f8fafc; }
 
@@ -219,12 +221,12 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				<!-- Main Content Panel -->
 				<article>
 					<div class="prose">
-						<!-- Only render publication dates and action triggers on true incident records -->
+						<!-- Only render publication dates and action triggers on true intelligence records -->
 						{!isStaticPage && (
 							<div class="meta-wrapper">
 								{pubDate && (
 									<div class="date">
-										<FormattedDate date={pubDate} />
+										Published on <FormattedDate date={pubDate} />
 									</div>
 								)}
 								<div class="share-actions">
@@ -238,13 +240,13 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 							</div>
 						)}
 
-						<!-- Only render taxonomy tags if it is an incident record -->
+						<!-- Only render taxonomy tags if it is an intelligence record -->
 						{!isStaticPage && tags.length > 0 && (
 							<div class="tag-container">
 								{tags.map((tag) => (
-									<span class="tag-badge">
-										{tag}
-									</span>
+									<a href={`/search?q=${encodeURIComponent(tag.toLowerCase())}`} class="tag-badge">
+										#{tag}
+									</a>
 								))}
 							</div>
 						)}
@@ -257,14 +259,14 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				{showSidebar && (
 					<aside class="sidebar-wrapper">
 						{nextPost && (
-							<a href={`/blog/${nextPost.data.shortenedSlug}`} class="nav-node-link">
+							<a href={`/blog/${nextPost.data.shortenedSlug || nextPost.slug}`} class="nav-node-link">
 								<span class="nav-node-label">← Next Record</span>
 								<span class="nav-node-title">{nextPost.data.title}</span>
 							</a>
 						)}
 						
 						{prevPost && (
-							<a href={`/blog/${prevPost.data.shortenedSlug}`} class="nav-node-link">
+							<a href={`/blog/${prevPost.data.shortenedSlug || prevPost.slug}`} class="nav-node-link">
 								<span class="nav-node-label">Previous Record →</span>
 								<span class="nav-node-title">{prevPost.data.title}</span>
 							</a>
@@ -319,9 +321,7 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				postLinks.forEach((link) => {
 					const href = link.getAttribute('href');
 					
-					// Parse HTTP/S targets excluding internal hooks or active archive domains
 					if (href && href.startsWith('http') && !href.includes('web.archive.org') && !href.includes(window.location.host)) {
-						// Block repeated appending across client routing cycles
 						if (link.nextElementSibling && link.nextElementSibling.classList.contains('wayback-fallback')) return;
 
 						const archiveLink = document.createElement('a');

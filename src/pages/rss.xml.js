@@ -6,7 +6,7 @@ export async function GET(context) {
 	const blog = await getCollection('blog');
 	const insights = await getCollection('insights');
 	
-	// Merge streams and order chronologically by date
+	// Merge streams and order chronologically by ErrorLedger publication date
 	const allPosts = [...blog, ...insights].sort(
 		(a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
 	);
@@ -18,8 +18,8 @@ export async function GET(context) {
 		items: allPosts.map((post) => ({
 			title: post.data.title,
 			description: post.data.description,
-			pubDate: post.data.pubDate,
-			// Clean URL output without trailing slashes to match canonical site routing
+			pubDate: new Date(post.data.pubDate),
+			// Clean URL output without trailing slashes matching canonical site routing
 			link: `/${post.collection}/${post.data.shortenedSlug || post.slug}`,
 		})),
 	});

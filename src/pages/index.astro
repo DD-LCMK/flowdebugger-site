@@ -8,7 +8,33 @@ import { getCollection } from 'astro:content';
 const allPosts = await getCollection('blog');
 const allInsights = await getCollection('insights');
 
-// 1. Count occurrences of each tag dynamically across active incidents
+// 1. Sort posts by ErrorLedger publish date (newest first)
+const posts = allPosts.sort((a, b) => {
+	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
+	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
+	return dateB - dateA;
+});
+
+// 2. Pillar bucketing using tag identifiers
+const aiEvolutions = posts.filter(p => 
+	p.data.tags.some((t: string) => 
+		['engineering-evolution', 'ai-infrastructure', 'openai', 'responses-api', 'mcp-protocol', 'anthropic'].includes(t.toLowerCase())
+	)
+).slice(0, 3);
+
+const architecturePosts = posts.filter(p => 
+	p.data.tags.some((t: string) => 
+		['architecture-explainer', 'protocol', 'database', 'cache', 'mcp-protocol'].includes(t.toLowerCase())
+	)
+).slice(0, 3);
+
+const incidentPosts = posts.filter(p => 
+	p.data.tags.some((t: string) => 
+		['sre-postmortem', 'service-outage', 'incident-analysis', 'infrastructure-failure', 'outage'].includes(t.toLowerCase())
+	)
+).slice(0, 3);
+
+// 3. Count occurrences of each tag dynamically across active posts
 const tagCounts: Record<string, number> = {};
 allPosts.forEach(post => {
 	if (post.data.tags) {
@@ -18,20 +44,12 @@ allPosts.forEach(post => {
 	}
 });
 
-// 2. Extract the top 5 active tags
 const topTags = Object.entries(tagCounts)
 	.sort((a, b) => b[1] - a[1])
 	.map(entry => entry[0])
 	.slice(0, 5);
 
-// Safe sorting for recent incident feed (by publication date)
-const posts = allPosts.sort((a, b) => {
-	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
-	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
-	return dateB - dateA;
-});
-
-// Sort and capture the 3 latest technical insights posts
+// Sort 3 latest technical insights posts
 const recentInsights = allInsights
 	.sort((a, b) => {
 		const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
@@ -40,12 +58,10 @@ const recentInsights = allInsights
 	})
 	.slice(0, 3);
 
-// 3. Serverless-Safe Scraping Engine: Parse incident dates using pure Astro metadata body strings
+// 4. Incident timeline metrics parser
 const annualMetrics: Record<number, number> = {};
-
 allPosts.forEach(post => {
 	let parsedDate = post.data.pubDate ? new Date(post.data.pubDate) : new Date();
-	
 	try {
 		const fileContent = post.body || '';
 		if (fileContent) {
@@ -71,16 +87,12 @@ allPosts.forEach(post => {
 	}
 });
 
-// Convert the metrics object into a chronologically sorted array (Oldest year to newest year)
 const timelineYears = Object.entries(annualMetrics)
 	.map(([year, count]) => ({
 		year: parseInt(year),
 		count
 	}))
 	.sort((a, b) => a.year - b.year);
-
-// Display the 3 most recently disclosed incidents
-const recentPosts = posts.slice(0, 3);
 ---
 
 <html lang="en">
@@ -167,7 +179,7 @@ const recentPosts = posts.slice(0, 3);
 			    min-height: 140px;
 			    align-items: center;
 			    width: max-content;
-			    min-width: 100%; /* Ensures track and line span full width */
+			    min-width: 100%;
 			}
 			.timeline-node-link {
 				text-decoration: none;
@@ -218,7 +230,7 @@ const recentPosts = posts.slice(0, 3);
 				color: #ffffff;
 			}
 
-			.feed-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 1.25rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
+			.feed-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 1.25rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem; }
 			ul { display: flex; flex-direction: column; gap: 1.5rem; list-style-type: none; margin: 0 0 2rem 0; padding: 0; }
 			ul li {
 				background: #ffffff;
@@ -294,7 +306,7 @@ const recentPosts = posts.slice(0, 3);
 		<main>
 			<section class="hero" style="margin-top: 1.5rem;">
 				<h1>Welcome to <span>ErrorLedger</span></h1>
-				<p>An independent, evergreen post-mortem analysis library documenting significant cloud infrastructure outages, cybersecurity breaches, and deep architectural failures.</p>
+				<p>An independent Engineering Intelligence Library documenting platform shifts, protocol mechanics, cloud infrastructure failures, and deep software post-mortems.</p>
 				
 				<form action="/search" method="GET" class="search-form">
 					<input 
@@ -335,6 +347,78 @@ const recentPosts = posts.slice(0, 3);
 				</div>
 			</section>
 
+			<!-- Pillar 1: AI Platform Evolutions & SDK Shifts -->
+			{aiEvolutions.length > 0 && (
+				<section style="margin-bottom: 3.5rem;">
+					<h3 class="feed-title"><span style="color: #3b82f6;">🤖</span> AI Platform Evolutions & SDK Shifts</h3>
+					<ul>
+						{aiEvolutions.map((post) => (
+							<li>
+								<a href={`/blog/${post.data.shortenedSlug || post.slug}`}>
+									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+										{post.data.tags.map((tag: string) => (
+											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #3b82f6; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
+												{tag}
+											</span>
+										))}
+									</div>
+									<h4 class="title">{post.data.title}</h4>
+									<p class="description">{post.data.description}</p>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			)}
+
+			<!-- Pillar 2: Architecture & Protocol Mechanics -->
+			{architecturePosts.length > 0 && (
+				<section style="margin-bottom: 3.5rem;">
+					<h3 class="feed-title"><span style="color: #10b981;">⚙️</span> Architecture & Protocol Mechanics</h3>
+					<ul>
+						{architecturePosts.map((post) => (
+							<li>
+								<a href={`/blog/${post.data.shortenedSlug || post.slug}`}>
+									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+										{post.data.tags.map((tag: string) => (
+											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #10b981; color: #ffffff; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
+												{tag}
+											</span>
+										))}
+									</div>
+									<h4 class="title">{post.data.title}</h4>
+									<p class="description">{post.data.description}</p>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			)}
+
+			<!-- Pillar 3: System Failures & Incident Post-Mortems -->
+			{incidentPosts.length > 0 && (
+				<section style="margin-bottom: 3.5rem;">
+					<h3 class="feed-title"><span style="color: #ef4444;">🔥</span> System Failures & Incident Post-Mortems</h3>
+					<ul>
+						{incidentPosts.map((post) => (
+							<li>
+								<a href={`/blog/${post.data.shortenedSlug || post.slug}`}>
+									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+										{post.data.tags.map((tag: string) => (
+											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
+												{tag}
+											</span>
+										))}
+									</div>
+									<h4 class="title">{post.data.title}</h4>
+									<p class="description">{post.data.description}</p>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			)}
+
 			<section style="margin-bottom: 2.5rem;">
 				<h3 class="feed-title">Incident History Matrix</h3>
 				<div class="timeline-window">
@@ -362,7 +446,6 @@ const recentPosts = posts.slice(0, 3);
 					{
 						recentInsights.map((post) => (
 							<li>
-								<!-- REMOVED TRAILING SLASH TO MATCH SITEMAP EXACTLY -->
 								<a href={`/insights/${post.data.shortenedSlug}`}>
 									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
 										{post.data.tags.map((tag: string) => (
@@ -385,34 +468,9 @@ const recentPosts = posts.slice(0, 3);
 				</div>
 			</section>
 
-			<section style="margin-bottom: 3.5rem;">
-				<h3 class="feed-title">Recently Disclosed Incidents</h3>
-				<ul>
-					{
-						recentPosts.map((post) => (
-							<li>
-								<!-- REMOVED TRAILING SLASH TO MATCH SITEMAP EXACTLY -->
-								<a href={`/blog/${post.data.shortenedSlug}`}>
-									<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-										{post.data.tags.map((tag: string) => (
-											<span class="card-tag" style="font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.025em;">
-												{tag}
-											</span>
-										))}
-									</div>
-									
-									<h4 class="title">{post.data.title}</h4>
-									<p class="description">{post.data.description}</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-				
-				<div class="view-all-container">
-					<a href="/blog" class="view-all-btn">View All Incident Records →</a>
-				</div>
-			</section>
+			<div class="view-all-container" style="margin-bottom: 3.5rem;">
+				<a href="/blog" class="view-all-btn">Browse Full Engineering Library Archive →</a>
+			</div>
 		</main>
 		<Footer />
 	</body>
