@@ -2,113 +2,154 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE } from '../consts';
 import { getCollection } from 'astro:content';
 
-const blogPosts = await getCollection('blog');
-const insightPosts = await getCollection('insights');
-const allPosts = [...blogPosts, ...insightPosts];
+const allPosts = await getCollection('blog');
+const allInsights = await getCollection('insights');
+const combined = [...allPosts, ...allInsights];
 
-const postsWithYears = allPosts.map(post => {
-	let parsedDate = post.data.pubDate ? new Date(post.data.pubDate) : new Date();
-	let itemYear = '';
-	try {
-		const fileContent = post.body || '';
-		if (fileContent) {
-			const tableMatch = fileContent.match(/\|\s*\*?\*?Date\*?\*?\s*\|\s*([^|]+)\|/i);
-			const textMatch = fileContent.match(/(?:^|\n|#|-|\*)\s*\*?\*?Date\*?\s*:\s*([^#\n\r|*]+)/i);
-			const rawDateString = tableMatch ? tableMatch[1] : (textMatch ? textMatch[1] : null);
-			if (rawDateString) {
-				const cleanDateStr = rawDateString.replace(/[\*\_]/g, '').trim();
-				const cleanParsedDate = new Date(cleanDateStr);
-				if (!isNaN(cleanParsedDate.getTime())) itemYear = cleanParsedDate.getUTCFullYear().toString();
-			}
-		}
-	} catch (e) {
-		console.error(e);
-	}
-	if (!itemYear) itemYear = parsedDate.getUTCFullYear().toString();
-	return { ...post, itemYear };
-});
+// Helper: Extract historical event year strictly from markdown metadata tables
+function getHistoricalYear(post: any): number | null {
+  try {
+    const fileContent = post.body || '';
+    if (fileContent) {
+      const tableMatch = fileContent.match(/\|\s*\*?\*?(?:Release Date|Incident Date|Event Date|Date)\*?\*?\s*\|\s*([^|]+)\|/i);
+      if (tableMatch && tableMatch[1]) {
+        const cleanDateStr = tableMatch[1].replace(/[\*\_]/g, '').trim();
+        const cleanParsedDate = new Date(cleanDateStr);
+        if (!isNaN(cleanParsedDate.getTime())) {
+          return cleanParsedDate.getUTCFullYear();
+        }
+      }
+    }
+  } catch (e) {
+    // Fail-safe
+  }
+  return null;
+}
 
-const posts = postsWithYears.sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
+const url = new URL(Astro.request.url);
+const query = url.searchParams.get('q')?.trim() || '';
+
+let results: any[] = [];
+
+if (query) {
+  // Check if search query is a 4-digit year (e.g., 2012, 2024, 2026)
+  const isYearQuery = /^\d{4}$/.test(query);
+
+  if (isYearQuery) {
+    const targetYear = parseInt(query, 10);
+    // Strictly filter by historical metadata table year
+    results = combined.filter(post => getHistoricalYear(post) === targetYear);
+  } else {
+    const lowerQ = query.toLowerCase();
+    results = combined.filter(post => {
+      const title = post.data.title?.toLowerCase() || '';
+      const desc = post.data.description?.toLowerCase() || '';
+      const tags = (post.data.tags || []).map((t: string) => t.toLowerCase()).join(' ');
+      const body = post.body?.toLowerCase() || '';
+
+      return title.includes(lowerQ) || desc.includes(lowerQ) || tags.includes(lowerQ) || body.includes(lowerQ);
+    });
+  }
+}
+
+// Sort search results by ErrorLedger publication date (newest first)
+results.sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
 ---
 
+<!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={`Search | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
-		<style>
-			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 3em 1rem; }
-			ul { display: flex; flex-direction: column; gap: 1.5rem; list-style-type: none; margin: 0; padding: 0; }
-			ul li { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; }
-			.title { margin: 0 0 0.5rem 0; font-size: 1.35rem; color: #1a202c; }
-			ul li a { text-decoration: none; }
-			.description { margin: 0; color: #4a5568; font-size: 0.95rem; }
-			.search-container { margin-bottom: 2rem; width: 100%; }
-			#search-box { width: 100%; padding: 0.75rem 1rem; font-size: 1rem; border-radius: 6px; border: 1px solid #cbd5e1; }
-			.tag-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; align-items: center; }
-			.card-tag { font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; }
-			.type-badge { font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; }
-			.type-incident { background: #fee2e2; color: #ef4444; }
-			.type-insight { background: #dbeafe; color: #3b82f6; }
-			:global(html.dark) ul li { background: #1e293b; border-color: #334155; }
-			:global(html.dark) .title { color: #f8fafc; }
-			:global(html.dark) .description { color: #cbd5e1; }
-			:global(html.dark) #search-box { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
-			:global(html.dark) .card-tag { background: #334155 !important; color: #cbd5e1 !important; }
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<div class="search-container">
-				<input type="text" id="search-box" placeholder="Search everything..." autocomplete="off" />
-			</div>
-			<ul>
-				{posts.map((post) => (
-					<li class="post-card" data-year={post.itemYear}>
-						<!-- Removed trailing slash -->
-						<a href={`/${post.collection}/${post.data.shortenedSlug}`}>
-							<div class="tag-row">
-								<span class={`type-badge ${post.collection === 'blog' ? 'type-incident' : 'type-insight'}`}>
-									{post.collection === 'blog' ? 'Incident' : 'Insight'}
-								</span>
-								{post.data.tags.map((tag: string) => <span class="card-tag">{tag}</span>)}
-							</div>
-							<h4 class="title">{post.data.title}</h4>
-							<p class="description">{post.data.description}</p>
-						</a>
-					</li>
-				))}
-			</ul>
-		</main>
-		<Footer />
-		<script>
-			function filterPosts(query) {
-				document.querySelectorAll('.post-card').forEach((post: any) => {
-					const text = (post.textContent + ' ' + (post.dataset.year || '')).toLowerCase();
-					post.style.display = text.includes(query) ? '' : 'none';
-				});
-			}
-			function init() {
-				const pageSearch: any = document.getElementById('search-box');
-				const headerSearch: any = document.querySelector('.header-search-input');
-				const query = new URLSearchParams(window.location.search).get('q') || '';
-				
-				if (pageSearch) pageSearch.value = query;
-				if (headerSearch) headerSearch.value = query;
-				filterPosts(query.toLowerCase().trim());
+  <head>
+    <BaseHead title={query ? `Search Results for "${query}" | ${SITE_TITLE}` : `Search | ${SITE_TITLE}`} description={`Search results for ${query}`} />
+    <style>
+      main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2em 1rem; }
+      .search-header { margin-bottom: 2rem; }
+      .search-input {
+        width: 100%;
+        padding: 0.85rem 1.25rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background-color: #ffffff;
+        color: #1e293b;
+        outline: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+      }
+      .search-input:focus { border-color: #ef4444; }
+      :global(html.dark) .search-input { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+      
+      .results-list { display: flex; flex-direction: column; gap: 1.5rem; list-style: none; padding: 0; margin: 0; }
+      .result-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+      .result-card:hover { border-color: #ef4444; transform: translateY(-2px); }
+      :global(html.dark) .result-card { background: #1e293b; border-color: #334155; }
+      
+      .result-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: #0f172a; }
+      :global(html.dark) .result-title { color: #f8fafc; }
+      .result-title a { text-decoration: none; color: inherit; }
+      .result-title a:hover { color: #ef4444; }
+      
+      .result-desc { font-size: 0.95rem; color: #475569; line-height: 1.5; margin: 0; }
+      :global(html.dark) .result-desc { color: #cbd5e1; }
+      
+      .no-results { padding: 3rem 0; text-align: center; color: #64748b; }
+      :global(html.dark) .no-results { color: #94a3b8; }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class="search-header">
+        <h1 class="text-2xl font-bold mb-4">
+          {query ? `Search Results for "${query}" (${results.length})` : 'Search Engineering Library'}
+        </h1>
+        <form action="/search" method="GET">
+          <input
+            type="text"
+            name="q"
+            value={query}
+            class="search-input"
+            placeholder="Filter by platform, protocol, year, or root cause..."
+            autocomplete="off"
+          />
+        </form>
+      </div>
 
-				const handler = (e: any) => {
-					if (headerSearch && e.target !== headerSearch) headerSearch.value = e.target.value;
-					if (pageSearch && e.target !== pageSearch) pageSearch.value = e.target.value;
-					filterPosts(e.target.value.toLowerCase().trim());
-				};
-				pageSearch?.addEventListener('input', handler);
-				headerSearch?.addEventListener('input', handler);
-			}
-			init();
-			document.addEventListener('astro:page-load', init);
-		</script>
-	</body>
+      {results.length > 0 ? (
+        <ul class="results-list">
+          {results.map((post) => (
+            <li class="result-card">
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                {(post.data.tags || []).map((tag: string) => (
+                  <span style="font-size: 0.72rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase;">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+              <h2 class="result-title">
+                <a href={`/${post.collection}/${post.data.shortenedSlug || post.slug}`}>
+                  {post.data.title}
+                </a>
+              </h2>
+              <p class="result-desc">{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      ) : query ? (
+        <div class="no-results">
+          <p class="text-lg font-semibold">No engineering records found for "{query}".</p>
+          <p class="text-sm mt-1">Try searching for a platform (e.g., OpenAI, AWS, Cloudflare) or an event year (e.g., 2024, 2012).</p>
+        </div>
+      ) : null}
+    </main>
+    <Footer />
+  </body>
 </html>
