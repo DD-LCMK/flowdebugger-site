@@ -192,7 +192,7 @@ overflow-x: auto !important;
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 0.18rem 0.55rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 5px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -205,72 +205,103 @@ overflow-x: auto !important;
 /* Pillar 1: AI Evolutions (Blue Glass) */
 .badge-pillar-ai {
   background: rgba(59, 130, 246, 0.12);
-  color: #2563eb;
-  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #1d4ed8;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
-:global(html.dark) .badge-pillar-ai {
-  background: rgba(59, 130, 246, 0.18);
-  color: #60a5fa;
-  border-color: rgba(96, 165, 250, 0.3);
+html.dark .badge-pillar-ai {
+  background: rgba(59, 130, 246, 0.22);
+  color: #93c5fd !important;
+  border-color: rgba(147, 197, 253, 0.35);
 }
 
 /* Pillar 2: Architecture & Protocols (Emerald Glass) */
 .badge-pillar-arch {
   background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
-:global(html.dark) .badge-pillar-arch {
-  background: rgba(16, 185, 129, 0.18);
-  color: #34d399;
-  border-color: rgba(52, 211, 153, 0.3);
+html.dark .badge-pillar-arch {
+  background: rgba(16, 185, 129, 0.22);
+  color: #6ee7b7 !important;
+  border-color: rgba(110, 231, 183, 0.35);
 }
 
 /* Pillar 3: System Failures & Incidents (Red Glass) */
 .badge-pillar-incident {
   background: rgba(239, 68, 68, 0.12);
-  color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
-:global(html.dark) .badge-pillar-incident {
-  background: rgba(239, 68, 68, 0.18);
-  color: #f87171;
-  border-color: rgba(248, 113, 113, 0.3);
+html.dark .badge-pillar-incident {
+  background: rgba(239, 68, 68, 0.22);
+  color: #fca5a5 !important;
+  border-color: rgba(252, 165, 165, 0.35);
 }
 
 /* Catch-All / Neutral Pillar (Slate Glass) */
 .badge-pillar-neutral {
   background: rgba(100, 116, 139, 0.12);
-  color: #475569;
-  border: 1px solid rgba(100, 116, 139, 0.25);
+  color: #334155;
+  border: 1px solid rgba(100, 116, 139, 0.3);
 }
-:global(html.dark) .badge-pillar-neutral {
-  background: rgba(100, 116, 139, 0.2);
-  color: #cbd5e1;
-  border-color: rgba(148, 163, 184, 0.3);
+html.dark .badge-pillar-neutral {
+  background: rgba(51, 65, 85, 0.6);
+  color: #e2e8f0 !important;
+  border-color: rgba(148, 163, 184, 0.4);
 }
 
-/* Custom SRE Blockquote / Markdown Callout Box */
+/* --- KEY TAKEAWAYS / SRE BLOCKQUOTE CALLOUT BOX DARK MODE FIX --- */
 .prose blockquote {
-  background: rgba(241, 245, 249, 0.65) !important;
+  background: rgba(241, 245, 249, 0.8) !important;
+  border: 1px solid #cbd5e1 !important;
   border-left: 4px solid #ef4444 !important;
-  border-radius: 0 8px 8px 0;
-  padding: 1.1rem 1.3rem !important;
+  border-radius: 8px !important;
+  padding: 1.25rem 1.5rem !important;
   margin: 1.75rem 0 !important;
   font-style: normal !important;
+  color: #1e293b !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  font-size: 1.05rem;
 }
-:global(html.dark) .prose blockquote {
-  background: rgba(30, 41, 59, 0.5) !important;
-  border-left-color: #f87171 !important;
+
+html.dark .prose blockquote {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  border-left: 4px solid #f87171 !important;
+  color: #f8fafc !important;
 }
 
 .prose blockquote h3 {
   margin-top: 0 !important;
-  margin-bottom: 0.5rem !important;
-  font-size: 1.1rem !important;
-  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem !important;
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  color: #ef4444 !important;
+}
+html.dark .prose blockquote h3 {
+  color: #f87171 !important;
+}
+
+.prose blockquote p,
+.prose blockquote ul,
+.prose blockquote li {
+  color: #334155 !important;
+  font-size: 0.98rem !important;
+  line-height: 1.6 !important;
+}
+html.dark .prose blockquote p,
+html.dark .prose blockquote ul,
+html.dark .prose blockquote li {
+  color: #cbd5e1 !important;
+}
+
+html.dark .prose blockquote strong {
+  color: #f8fafc !important;
+}
+
+html.dark .prose blockquote code {
+  background-color: #0f172a !important;
+  color: #38bdf8 !important;
+  border: 1px solid #334155 !important;
 }
 
 /* Interactive Timeline Pulse Ring Animation */

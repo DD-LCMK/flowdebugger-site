@@ -68,8 +68,6 @@ const recentInsights = allInsights
 	.slice(0, 3);
 
 // 5. Strict Historical Event Scraping Engine
-// Only scrapes explicit Release Date, Incident Date, Event Date, or Date from markdown metadata tables.
-// If missing, the post is EXCLUDED from the timeline.
 const annualMetrics: Record<number, number> = {};
 
 [...allPosts, ...allInsights].forEach(post => {
@@ -109,7 +107,6 @@ const timelineYears = Object.entries(annualMetrics)
 		<style>
 			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 1.5em 1rem; }
 			
-			/* Hero Layout for Search Section */
 			.hero { text-align: center; margin-bottom: 2.5rem; padding: 1rem 0; }
 			.hero h1 { font-size: 2.25rem; margin-bottom: 0.75rem; letter-spacing: -0.025em; color: #0f172a; font-weight: 800; }
 			.hero h1 span { color: #ef4444; }

@@ -82,7 +82,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 		<!-- Automated Google JSON-LD Structured Data Injection -->
 		<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 		<style>
-			/* Layout constraints aligned to header boundaries */
 			main { width: calc(100% - 2rem); max-width: 960px; margin: 0 auto; padding: 2em 1rem; }
 			
 			.post-layout-grid {
@@ -98,7 +97,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				}
 			}
 
-			/* Minimal Fixed Sidebar Wrapper */
 			.sidebar-wrapper {
 				display: none;
 			}
@@ -106,7 +104,7 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				.post-layout-grid.has-sidebar .sidebar-wrapper {
 					display: block;
 					position: sticky;
-					top: 5.5rem; /* Clears sticky header bar smoothly */
+					top: 5.5rem;
 					height: fit-content;
 					max-height: calc(100vh - 7rem);
 					overflow-y: auto;
@@ -117,7 +115,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				}
 			}
 
-			/* Clean Record Navigation Nodes */
 			.nav-node-link {
 				display: block;
 				text-decoration: none;
@@ -190,7 +187,7 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 
 			.tag-container { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
 
-			/* --- STRICT DARK MODE SYSTEM OVERRIDES --- */
+			/* --- STRICT DARK MODE OVERRIDES --- */
 			:global(html.dark) .prose { color: #cbd5e1; }
 			:global(html.dark) .prose h1, :global(html.dark) .prose h2, :global(html.dark) .prose :global(h3) { color: #f8fafc; }
 			:global(html.dark) .prose :global(th) { background-color: #1e293b; border-bottom-color: #334155; }
@@ -221,7 +218,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				<!-- Main Content Panel -->
 				<article>
 					<div class="prose">
-						<!-- Only render publication dates, reading time, and action triggers on true intelligence records -->
 						{!isStaticPage && (
 							<div class="meta-wrapper">
 								<div class="date-info font-mono-tech">
@@ -252,7 +248,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 							</div>
 						)}
 
-						<!-- Render translucent taxonomy badges -->
 						{!isStaticPage && tags.length > 0 && (
 							<div class="tag-container">
 								{tags.map((tag) => (
@@ -267,7 +262,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 					</div>
 				</article>
 
-				<!-- Simplified Mini Navigation Sidebar Card -->
 				{showSidebar && (
 					<aside class="sidebar-wrapper">
 						{nextPost && (
@@ -290,7 +284,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 		<Footer />
 
 		<script>
-			// Handle article URL sharing clipboard actions
 			const copyBtn = document.getElementById('copy-link-btn');
 			if (copyBtn) {
 				copyBtn.addEventListener('click', () => {
@@ -303,7 +296,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				});
 			}
 
-			// Attach copy utilities to code blocks
 			const codeBlocks = document.querySelectorAll('.prose pre');
 			codeBlocks.forEach((block) => {
 				const button = document.createElement('button');
@@ -327,7 +319,6 @@ const showSidebar = !isStaticPage && (nextPost || prevPost);
 				});
 			});
 
-			// Append automated Wayback Machine archive links adjacent to external hyperlinks
 			document.addEventListener('astro:page-load', () => {
 				const postLinks = document.querySelectorAll('.prose a');
 				postLinks.forEach((link) => {

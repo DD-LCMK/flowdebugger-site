@@ -4,7 +4,7 @@ import { SITE_TITLE } from '../consts';
 ---
 
 <header>
-	<nav>
+	<nav class="header-nav">
 		<h2>
 			<a href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-weight: 700; font-size: 1.25rem;">
 				<span style="background-color: #0f172a; color: #ef4444; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.95rem; display: inline-flex; align-items: center; font-weight: 900;">&gt;_</span>
@@ -12,13 +12,13 @@ import { SITE_TITLE } from '../consts';
 			</a>
 		</h2>
 
-		<!-- FIX: Changed action to /search to query all collections globally -->
+		<!-- Flexible, Full-Length Search Input -->
 		<form action="/search" method="GET" class="header-search-form">
 			<input 
 				type="text" 
 				name="q" 
 				class="header-search-input" 
-				placeholder="Search all topics..." 
+				placeholder="Search all records..." 
 				aria-label="Search repository globally"
 				autocomplete="off"
 			/>
@@ -46,7 +46,7 @@ import { SITE_TITLE } from '../consts';
 		</div>
 	</nav>
 
-	<!-- Telemetry Reading Progress Infrastructure Container -->
+	<!-- Telemetry Reading Progress Bar -->
 	<div class="progress-bus">
 		<div id="reading-progress-bar" class="progress-fill"></div>
 	</div>
@@ -98,10 +98,10 @@ import { SITE_TITLE } from '../consts';
 		top: 0;
 		z-index: 100;
 		margin: 0;
-		padding: 0 1rem;
-		background: rgba(255, 255, 255, 0.82);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
+		padding: 0 1.5rem;
+		background: rgba(255, 255, 255, 0.85);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
 		border-bottom: 1px solid #e2e8f0;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 		transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -112,19 +112,21 @@ import { SITE_TITLE } from '../consts';
 		display: flex;
 		align-items: center;
 	}
-	nav {
+	.header-nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		max-width: 960px;
+		max-width: 1200px; /* EXPANDED FROM 960px TO PREVENT SQUASHING */
 		margin: 0 auto;
-		padding: 1rem 0;
+		padding: 0.85rem 0;
+		gap: 1.5rem;
 	}
 	.internal-links a {
-		padding: 0.5rem 1rem;
+		padding: 0.5rem 0.75rem;
 		color: rgb(var(--black));
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
+		font-size: 0.9rem;
 	}
 	.internal-links a.active {
 		text-decoration: none;
@@ -137,13 +139,13 @@ import { SITE_TITLE } from '../consts';
 	/* Search input styles */
 	.header-search-form {
 		flex-grow: 1;
-		max-width: 220px;
-		margin: 0 1.5rem;
+		max-width: 320px; /* EXPANDED FROM 220px FOR FULL LENGTH */
+		margin: 0 1rem;
 	}
 	.header-search-input {
 		width: 100%;
-		padding: 0.45rem 0.75rem;
-		font-size: 0.85rem;
+		padding: 0.5rem 0.85rem;
+		font-size: 0.88rem;
 		border-radius: 6px;
 		border: 1px solid #cbd5e1;
 		background: #f8fafc;
@@ -155,10 +157,10 @@ import { SITE_TITLE } from '../consts';
 	.header-search-input:focus {
 		border-color: #ef4444;
 		background: #ffffff;
-		box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+		box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 850px) {
 		.header-search-form {
 			display: none;
 		}
@@ -181,7 +183,7 @@ import { SITE_TITLE } from '../consts';
 	}
 
 	:global(html.dark) header {
-		background: rgba(15, 23, 42, 0.82);
+		background: rgba(15, 23, 42, 0.88);
 		border-bottom-color: #1e293b;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 	}
