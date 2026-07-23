@@ -8,7 +8,7 @@ import { getCollection } from 'astro:content';
 const allPosts = await getCollection('blog');
 const allInsights = await getCollection('insights');
 
-// 1. Sort posts by ErrorLedger publish date (newest first)
+// 1. Sort posts by ErrorLedger publication date (newest first for feed views)
 const posts = allPosts.sort((a, b) => {
 	const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
 	const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
@@ -58,32 +58,33 @@ const recentInsights = allInsights
 	})
 	.slice(0, 3);
 
-// 4. Incident timeline metrics parser
+// 4. Strict Historical Event Scraping Engine
+// Only scrapes explicit Release Date, Incident Date, Event Date, or Date from markdown metadata tables.
+// If missing, the post is EXCLUDED from the timeline.
 const annualMetrics: Record<number, number> = {};
-allPosts.forEach(post => {
-	let parsedDate = post.data.pubDate ? new Date(post.data.pubDate) : new Date();
+
+// Evaluate across all blog records and technical insights
+[...allPosts, ...allInsights].forEach(post => {
 	try {
 		const fileContent = post.body || '';
 		if (fileContent) {
-			const tableMatch = fileContent.match(/\|\s*\*?\*?Date\*?\*?\s*\|\s*([^|]+)\|/i);
-			const textMatch = fileContent.match(/(?:^|\n|#|-|\*)\s*\*?\*?Date\*?\s*:\s*([^#\n\r|*]+)/i);
-			const rawDateString = tableMatch ? tableMatch[1] : (textMatch ? textMatch[1] : null);
+			// Regex targeting Release Date, Incident Date, Event Date, or Date in markdown tables
+			const tableMatch = fileContent.match(/\|\s*\*?\*?(?:Release Date|Incident Date|Event Date|Date)\*?\*?\s*\|\s*([^|]+)\|/i);
 			
-			if (rawDateString) {
-				const cleanDateStr = rawDateString.replace(/[\*\_]/g, '').trim();
+			if (tableMatch && tableMatch[1]) {
+				const cleanDateStr = tableMatch[1].replace(/[\*\_]/g, '').trim();
 				const cleanParsedDate = new Date(cleanDateStr);
+				
 				if (!isNaN(cleanParsedDate.getTime())) {
-					parsedDate = cleanParsedDate;
+					const eventYear = cleanParsedDate.getUTCFullYear();
+					if (!isNaN(eventYear)) {
+						annualMetrics[eventYear] = (annualMetrics[eventYear] || 0) + 1;
+					}
 				}
 			}
 		}
 	} catch (error) {
-		console.error(`Failed to scrape markdown incident date for: ${post.id}`, error);
-	}
-
-	const incidentYear = parsedDate.getUTCFullYear();
-	if (!isNaN(incidentYear)) {
-		annualMetrics[incidentYear] = (annualMetrics[incidentYear] || 0) + 1;
+		console.error(`Failed to scrape metadata table date for: ${post.id}`, error);
 	}
 });
 
@@ -419,25 +420,27 @@ const timelineYears = Object.entries(annualMetrics)
 				</section>
 			)}
 
-			<section style="margin-bottom: 2.5rem;">
-				<h3 class="feed-title">Incident History Matrix</h3>
-				<div class="timeline-window">
-				    <div class="timeline-track">
-				    <div class="timeline-axis"></div>
-				        {
-				            timelineYears.map((node) => (
-				                <a href={`/search?q=${node.year}`} class="timeline-node-link">
-				                    <span class="timeline-year-label">{node.year}</span>
-				                    <div class="timeline-pulse-dot"></div>
-				                    <span class="timeline-count-badge">
-				                        {node.count} {node.count === 1 ? 'Incident' : 'Incidents'}
-				                    </span>
-				                </a>
-				            ))
-        				}
-   				 </div>
-				</div>
-			</section>
+			{timelineYears.length > 0 && (
+				<section style="margin-bottom: 2.5rem;">
+					<h3 class="feed-title">Engineering History Matrix</h3>
+					<div class="timeline-window">
+					    <div class="timeline-track">
+					    <div class="timeline-axis"></div>
+					        {
+					            timelineYears.map((node) => (
+					                <a href={`/search?q=${node.year}`} class="timeline-node-link">
+					                    <span class="timeline-year-label">{node.year}</span>
+					                    <div class="timeline-pulse-dot"></div>
+					                    <span class="timeline-count-badge">
+					                        {node.count} {node.count === 1 ? 'Record' : 'Records'}
+					                    </span>
+					                </a>
+					            ))
+	        				}
+	   				 </div>
+					</div>
+				</section>
+			)}
 
 			<!-- Technical & Software Economics Insights Section -->
 			<section style="margin-bottom: 3.5rem;">
