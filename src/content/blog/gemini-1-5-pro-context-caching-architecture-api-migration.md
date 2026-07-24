@@ -156,7 +156,7 @@ Gemini models require a minimum sequence length—typically 32,768 tokens for Ge
 
 ### Related Articles
 
-*   **[OpenAI Responses API Migration: Chat Completions Paradigm Shift](https://errorledger.com/blog/openai-responses-api-migration-chat-completions-paradigm-shift)** — Migration guide for OpenAI's stateful Responses API paradigm shift.
+*   **[OpenAI Responses API Migration: Chat Completions Paradigm Shift](https://errorledger.com/blog/openai-responses-api-migration-chat-completions)** — Migration guide for OpenAI's stateful Responses API paradigm shift.
 *   **[GitLab PostgreSQL replication lag directory deletion 6-hour total recovery](https://errorledger.com/blog/gitlab-postgresql-replication-lag-directory-deletion)** — Database directory recovery and replication lag teardown.
 *   **[Rogers Communications IP routing prefix distribution table overload national network crash](https://errorledger.com/blog/rogers-routing-table-overload-outage-2022)** — Routing table overload and core transport network recovery.
 
